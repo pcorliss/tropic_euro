@@ -1,13 +1,15 @@
 {
   "scripts": {
     "build-ts": "tsc",
-    "build": "npm run build-ts",
+    "build": "npm run build-ts && npm run lint",
+    "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
     "test": "jest --forceExit --coverage --verbose",
     "watch-ts": "tsc -w",
     "watch": "npm run watch-ts"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
     "chai": "^4.3.6",
     "eslint": "^8.13.0",
     "jest": "^27.5.1",
