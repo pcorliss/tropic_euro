@@ -3,6 +3,7 @@ import { Building } from "./Building";
 import { Plantation } from "./Plantation";
 import { Role } from "./Role";
 import { Ship } from "./Ship";
+import { SmallIndigoPlant } from "../buildings/SmallIndigoPlant";
 
 export class GameState {
     players: Player[];
@@ -21,6 +22,7 @@ export class GameState {
 
     constructor(playerNames: string[]) {
         this.players = playerNames.map(n => new Player(n));
+        this.buildings = [new SmallIndigoPlant()];
         // Init Buildings
         // ShufflePlantations
         // DealPlantations

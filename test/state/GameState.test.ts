@@ -9,7 +9,7 @@ describe("GameState", () => {
             expect(gs.players[2].name).toBe("Carol");
         });
 
-        xit("inits buildings", () => {
+        it("inits buildings", () => {
             const gs = new GameState(["Alice", "Bob", "Carol"]);
             expect(gs.buildings[0].name).toBe("Small Indigo Plant");
         });
