@@ -21,6 +21,7 @@ export class GameState {
     roles: Role[];
     availableRoles: Role[];
     roundCounter: number;
+    governorIdx: number;
 
     initPlantations(): void {
         // 8 quarry tiles and 50 plantation tiles: 8 coffee,
@@ -111,15 +112,27 @@ export class GameState {
         }
     }
 
+    initRoles(): void {
+        const roleNames = ["settler", "mayor", "builder", "craftsman", "trader", "captain"];
+        this.roles = roleNames.map(n => new Role(n));
+        if (this.players.length >= 4) {
+            this.roles.push(new Role("prospector"));
+        }
+        if (this.players.length == 5) {
+            this.roles.push(new Role("prospector"));
+        }
+    }
+
     constructor(playerNames: string[]) {
-        this.players = playerNames.map(n => new Player(n));
+        const shuffledNames = shuffle(playerNames);
+        this.players = shuffledNames.map(n => new Player(n));
         this.buildings = [new SmallIndigoPlant()];
         this.initPlantations();
         this.initColonists();
         this.initVPs();
         this.initTradeShips();
-        // SelectShips
+        this.initRoles();
+        this.governorIdx = 0;
         // SelectRoles
-        // RandomGovernor
     }
 }

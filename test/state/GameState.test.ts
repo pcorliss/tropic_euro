@@ -6,9 +6,6 @@ describe("GameState", () => {
 
     describe("constructor", () => {
         it("inits players", () => {
-            expect(gs.players[0].name).toBe("Alice");
-            expect(gs.players[1].name).toBe("Bob");
-            expect(gs.players[2].name).toBe("Carol");
             expect(gs.players.length).toBe(3);
         });
 
@@ -48,6 +45,18 @@ describe("GameState", () => {
             expect(gs.ships[2].spots).toBe(6);
         });
 
+        it("inits governor", () => {
+            expect(gs.governorIdx).toBe(0);
+        });
+
+        it("inits roles", () => {
+            expect(gs.roles.length).toBe(6);
+            const roles = gs.roles.map(r => r.name);
+            const expectedRoles = ["settler", "mayor", "builder", "craftsman", "trader", "captain"];
+            expect(roles).toEqual(expect.arrayContaining(expectedRoles));
+            expect(roles.length).toBe(expectedRoles.length);
+        });
+
         describe("4 players", () => {
             const names = ["Alice", "Bob", "Carol", "Doug"];
             const gs = new GameState(names);
@@ -78,6 +87,14 @@ describe("GameState", () => {
                 expect(gs.ships[0].spots).toBe(5);
                 expect(gs.ships[1].spots).toBe(6);
                 expect(gs.ships[2].spots).toBe(7);
+            });
+
+            it("inits roles", () => {
+                expect(gs.roles.length).toBe(7);
+                const roles = gs.roles.map(r => r.name);
+                const expectedRoles = ["settler", "mayor", "builder", "craftsman", "trader", "captain", "prospector"];
+                expect(roles).toEqual(expect.arrayContaining(expectedRoles));
+                expect(roles.length).toBe(expectedRoles.length);
             });
         });
 
@@ -112,6 +129,14 @@ describe("GameState", () => {
                 expect(gs.ships[0].spots).toBe(6);
                 expect(gs.ships[1].spots).toBe(7);
                 expect(gs.ships[2].spots).toBe(8);
+            });
+
+            it("inits roles", () => {
+                expect(gs.roles.length).toBe(8);
+                const roles = gs.roles.map(r => r.name);
+                const expectedRoles = ["settler", "mayor", "builder", "craftsman", "trader", "captain", "prospector", "prospector"];
+                expect(roles).toEqual(expect.arrayContaining(expectedRoles));
+                expect(roles.length).toBe(expectedRoles.length);
             });
         });
     });
