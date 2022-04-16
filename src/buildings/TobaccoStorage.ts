@@ -10,4 +10,5 @@ export class TobaccoStorage extends Building {
     staff = 0;
     points = 3;
     cost = 5;
+    phase = "production";
 }

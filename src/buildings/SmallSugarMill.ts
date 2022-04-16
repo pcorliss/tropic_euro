@@ -10,4 +10,5 @@ export class SmallSugarMill extends Building {
     staff = 0;
     points = 1;
     cost = 2;
+    phase = "production";
 }

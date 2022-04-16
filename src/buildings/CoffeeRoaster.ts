@@ -10,4 +10,5 @@ export class CoffeeRoaster extends Building {
     staff = 0;
     points = 3;
     cost = 6;
+    phase = "production";
 }

@@ -9,4 +9,5 @@ export class ConstructionHut extends Building {
     staff = 0;
     points = 1;
     cost = 2;
+    phase = "settling";
 }

@@ -10,4 +10,5 @@ export class LargeIndigoPlant extends Building {
     staff = 0;
     points = 2;
     cost = 3;
+    phase = "production";
 }

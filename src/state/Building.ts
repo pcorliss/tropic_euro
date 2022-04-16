@@ -8,4 +8,5 @@ export class Building {
     staff: number;
     points: number;
     cost: number;
+    phase: string;
 }

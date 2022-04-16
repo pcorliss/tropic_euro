@@ -9,4 +9,5 @@ export class Factory extends Building {
     staff = 0;
     points = 3;
     cost = 7;
+    phase = "production";
 }

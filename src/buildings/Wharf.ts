@@ -9,4 +9,5 @@ export class Wharf extends Building {
     staff = 0;
     points = 3;
     cost = 9;
+    phase = "shipping";
 }

@@ -9,4 +9,5 @@ export class SmallMarket extends Building {
     staff = 0;
     points = 1;
     cost = 1;
+    phase = "trading";
 }

@@ -9,4 +9,5 @@ export class Harbor extends Building {
     staff = 0;
     points = 3;
     cost = 8;
+    phase = "shipping";
 }

@@ -9,4 +9,5 @@ export class SmallWarehouse extends Building {
     staff = 0;
     points = 1;
     cost = 3;
+    phase = "spoiling";
 }

@@ -9,4 +9,5 @@ export class Residence extends Building {
     staff = 0;
     points = 4;
     cost = 10;
+    phase = "gameEnd";
 }

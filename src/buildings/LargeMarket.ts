@@ -9,4 +9,5 @@ export class LargeMarket extends Building {
     staff = 0;
     points = 2;
     cost = 5;
+    phase = "trading";
 }
