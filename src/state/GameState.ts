@@ -133,6 +133,5 @@ export class GameState {
         this.initTradeShips();
         this.initRoles();
         this.governorIdx = 0;
-        // SelectRoles
     }
 }
