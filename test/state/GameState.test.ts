@@ -41,9 +41,12 @@ describe("GameState", () => {
             expect(gs.victoryPoints).toBe(75);
         });
 
-        // it("inits ships", () => {
-        //     expect(gs.).toBe(75);
-        // });
+        it("inits ships", () => {
+            expect(gs.ships.length).toBe(3);
+            expect(gs.ships[0].spots).toBe(4);
+            expect(gs.ships[1].spots).toBe(5);
+            expect(gs.ships[2].spots).toBe(6);
+        });
 
         describe("4 players", () => {
             const names = ["Alice", "Bob", "Carol", "Doug"];
@@ -68,6 +71,13 @@ describe("GameState", () => {
 
             it("inits vps", () => {
                 expect(gs.victoryPoints).toBe(100);
+            });
+
+            it("inits ships", () => {
+                expect(gs.ships.length).toBe(3);
+                expect(gs.ships[0].spots).toBe(5);
+                expect(gs.ships[1].spots).toBe(6);
+                expect(gs.ships[2].spots).toBe(7);
             });
         });
 
@@ -95,6 +105,13 @@ describe("GameState", () => {
 
             it("inits vps", () => {
                 expect(gs.victoryPoints).toBe(126);
+            });
+
+            it("inits ships", () => {
+                expect(gs.ships.length).toBe(3);
+                expect(gs.ships[0].spots).toBe(6);
+                expect(gs.ships[1].spots).toBe(7);
+                expect(gs.ships[2].spots).toBe(8);
             });
         });
     });

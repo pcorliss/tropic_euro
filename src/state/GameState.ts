@@ -103,11 +103,11 @@ export class GameState {
 
     initTradeShips(): void {
         if (this.players.length == 3) {
-            this.victoryPoints = 75;
+            this.ships = [ new Ship(4), new Ship(5), new Ship(6) ];
         } else if (this.players.length == 4) {
-            this.victoryPoints = 100;
+            this.ships = [ new Ship(5), new Ship(6), new Ship(7) ];
         } else {
-            this.victoryPoints = 126;
+            this.ships = [ new Ship(6), new Ship(7), new Ship(8) ];
         }
     }
 
