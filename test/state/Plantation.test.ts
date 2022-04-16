@@ -1,6 +1,6 @@
 import { Plantation } from "../../src/state/Plantation";
 
-describe("Playstation", () => {
+describe("Plantation", () => {
     describe("constructor", () => {
         it("inits type", () => {
             const p = new Plantation("indigo");
