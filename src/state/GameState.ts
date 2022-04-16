@@ -101,12 +101,23 @@ export class GameState {
         }
     }
 
+    initTradeShips(): void {
+        if (this.players.length == 3) {
+            this.victoryPoints = 75;
+        } else if (this.players.length == 4) {
+            this.victoryPoints = 100;
+        } else {
+            this.victoryPoints = 126;
+        }
+    }
+
     constructor(playerNames: string[]) {
         this.players = playerNames.map(n => new Player(n));
         this.buildings = [new SmallIndigoPlant()];
         this.initPlantations();
         this.initColonists();
         this.initVPs();
+        this.initTradeShips();
         // SelectShips
         // SelectRoles
         // RandomGovernor

@@ -41,6 +41,10 @@ describe("GameState", () => {
             expect(gs.victoryPoints).toBe(75);
         });
 
+        // it("inits ships", () => {
+        //     expect(gs.).toBe(75);
+        // });
+
         describe("4 players", () => {
             const names = ["Alice", "Bob", "Carol", "Doug"];
             const gs = new GameState(names);
