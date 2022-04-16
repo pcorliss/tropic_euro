@@ -5,4 +5,10 @@ export class Board {
     buildings: Building[];
     plantations: Plantation[];
     sanJuanColonists: number;
+
+    constructor() {
+        this.plantations = [];
+        this.buildings = [];
+        this.sanJuanColonists = 0;
+    }
 }

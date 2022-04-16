@@ -9,5 +9,6 @@ export class Player {
 
     constructor(name: string) {
         this.name = name;
+        this.board = new Board();
     }
 }

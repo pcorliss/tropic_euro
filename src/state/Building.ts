@@ -7,4 +7,5 @@ export class Building {
     size: number;
     staff: number;
     points: number;
+    cost: number;
 }
