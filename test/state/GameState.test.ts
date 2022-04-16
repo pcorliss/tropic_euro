@@ -57,6 +57,16 @@ describe("GameState", () => {
             expect(roles.length).toBe(expectedRoles.length);
         });
 
+        it("inits available roles", () => {
+            expect(gs.roles.length).toBe(gs.availableRoles.length);
+            gs.availableRoles.pop();
+            expect(gs.roles.length).not.toBe(gs.availableRoles.length);
+        });
+
+        it("inits round counter", () => {
+            expect(gs.roundCounter).toBe(0);
+        });
+
         describe("4 players", () => {
             const names = ["Alice", "Bob", "Carol", "Doug"];
             const gs = new GameState(names);

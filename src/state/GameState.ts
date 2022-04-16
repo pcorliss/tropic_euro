@@ -121,6 +121,8 @@ export class GameState {
         if (this.players.length == 5) {
             this.roles.push(new Role("prospector"));
         }
+
+        this.availableRoles = this.roles.map(r => r);
     }
 
     constructor(playerNames: string[]) {
@@ -133,5 +135,6 @@ export class GameState {
         this.initTradeShips();
         this.initRoles();
         this.governorIdx = 0;
+        this.roundCounter = 0;
     }
 }
