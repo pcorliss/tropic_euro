@@ -3,7 +3,7 @@ export class Building {
     production: boolean;
     productionType: string;
     description: string;
-    staff_spots: number;
+    staffSpots: number;
     size: number;
     staff: number;
     points: number;

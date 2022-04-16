@@ -1,13 +1,13 @@
 import { Building } from "../state/Building";
 
-export class SmallIndigoPlant extends Building {
-    name = "Small Indigo Plant";
+export class SmallSugarMill extends Building {
+    name = "Small Sugar Mill";
     production = true;
-    productionType = "indigo";
+    productionType = "sugar";
     description = "";
     staffSpots = 1;
     size = 1;
     staff = 0;
     points = 1;
-    cost = 1;
+    cost = 2;
 }
