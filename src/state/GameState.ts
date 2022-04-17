@@ -3,7 +3,31 @@ import { Building } from "./Building";
 import { Plantation } from "./Plantation";
 import { Role } from "./Role";
 import { Ship } from "./Ship";
+
+import { CityHall } from "../buildings/CityHall";
+import { CoffeeRoaster } from "../buildings/CoffeeRoaster";
+import { ConstructionHut } from "../buildings/ConstructionHut";
+import { CustomsHouse } from "../buildings/CustomsHouse";
+import { Factory } from "../buildings/Factory";
+import { Fortress } from "../buildings/Fortress";
+import { GuildHall } from "../buildings/GuildHall";
+import { Hacienda } from "../buildings/Hacienda";
+import { Harbor } from "../buildings/Harbor";
+import { Hospice } from "../buildings/Hospice";
+import { LargeIndigoPlant } from "../buildings/LargeIndigoPlant";
+import { LargeMarket } from "../buildings/LargeMarket";
+import { LargeSugarMill } from "../buildings/LargeSugarMill";
+import { LargeWarehouse } from "../buildings/LargeWarehouse";
+import { Office } from "../buildings/Office";
+import { Residence } from "../buildings/Residence";
 import { SmallIndigoPlant } from "../buildings/SmallIndigoPlant";
+import { SmallMarket } from "../buildings/SmallMarket";
+import { SmallSugarMill } from "../buildings/SmallSugarMill";
+import { SmallWarehouse } from "../buildings/SmallWarehouse";
+import { TobaccoStorage } from "../buildings/TobaccoStorage";
+import { University } from "../buildings/University";
+import { Wharf } from "../buildings/Wharf";
+
 import { shuffle } from "lodash";
 
 export class GameState {
@@ -125,10 +149,71 @@ export class GameState {
         this.availableRoles = this.roles.map(r => r);
     }
 
+    initBuildings(): void {
+        this.buildings = [
+            new SmallIndigoPlant(),
+            new SmallIndigoPlant(),
+            new SmallIndigoPlant(),
+            new SmallIndigoPlant(),
+
+            new SmallSugarMill(),
+            new SmallSugarMill(),
+            new SmallSugarMill(),
+            new SmallSugarMill(),
+
+            new SmallMarket(),
+            new SmallMarket(),
+            new ConstructionHut(),
+            new ConstructionHut(),
+            new Hacienda(),
+            new Hacienda(),
+            new SmallWarehouse(),
+            new SmallWarehouse(),
+
+            new LargeIndigoPlant(),
+            new LargeIndigoPlant(),
+            new LargeIndigoPlant(),
+            new LargeSugarMill(),
+            new LargeSugarMill(),
+            new LargeSugarMill(),
+
+            new LargeMarket(),
+            new LargeMarket(),
+            new Hospice(),
+            new Hospice(),
+            new Office(),
+            new Office(),
+            new LargeWarehouse(),
+            new LargeWarehouse(),
+
+            new TobaccoStorage(),
+            new TobaccoStorage(),
+            new TobaccoStorage(),
+            new CoffeeRoaster(),
+            new CoffeeRoaster(),
+            new CoffeeRoaster(),
+
+            new Factory(),
+            new Factory(),
+            new University(),
+            new University(),
+            new Harbor(),
+            new Harbor(),
+            new Wharf(),
+            new Wharf(),
+
+            new Residence(),
+            new CityHall(),
+            new CustomsHouse(),
+            new Fortress(),
+            new GuildHall(),
+        ];
+    }
+
     constructor(playerNames: string[]) {
         const shuffledNames = shuffle(playerNames);
         this.players = shuffledNames.map(n => new Player(n));
-        this.buildings = [new SmallIndigoPlant()];
+        this.initBuildings();
         this.initPlantations();
         this.initColonists();
         this.initVPs();

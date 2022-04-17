@@ -9,7 +9,7 @@ describe("GameState", () => {
             expect(gs.players.length).toBe(3);
         });
 
-        xit("inits buildings", () => {
+        it("inits buildings", () => {
             expect(gs.buildings[0].name).toBe("Small Indigo Plant");
             expect(gs.buildings.length).toBe(49);
         });
