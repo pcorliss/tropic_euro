@@ -52,8 +52,9 @@ export class GameState {
     ships: Ship[];
     roles: Role[];
     availableRoles: Role[];
-    roundCounter: number;
-    governorIdx: number;
+    roundCounter = 0;
+    governorIdx = 0;
+    currentPlayerIdx = 0;
 
     initPlantations(): void {
         // 8 quarry tiles and 50 plantation tiles: 8 coffee,
@@ -225,6 +226,14 @@ export class GameState {
         ];
     }
 
+    currentPlayer(): Player {
+        return this.players[this.currentPlayerIdx];
+    }
+
+    governor(): Player {
+        return this.players[this.governorIdx];
+    }
+
     constructor(playerNames: string[]) {
         const shuffledNames = shuffle(playerNames);
         this.players = shuffledNames.map(n => new Player(n));
@@ -234,7 +243,8 @@ export class GameState {
         this.initVPs();
         this.initTradeShips();
         this.initRoles();
-        this.governorIdx = 0;
-        this.roundCounter = 0;
     }
+
+    // player calls availableActions()
+    // if player turn they choose role or action as part of another player's role
 }

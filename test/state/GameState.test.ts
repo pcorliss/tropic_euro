@@ -67,6 +67,22 @@ describe("GameState", () => {
             expect(gs.roundCounter).toBe(0);
         });
 
+        it("inits current player", () => {
+            expect(gs.currentPlayerIdx).toBe(0);
+        });
+
+        describe("currentPlayer", () => {
+            it("returns the current player", () => {
+                expect(gs.currentPlayer()).toBe(gs.players[0]);
+            });
+        });
+
+        describe("governor", () => {
+            it("returns the governor", () => {
+                expect(gs.governor()).toBe(gs.players[0]);
+            });
+        });
+
         describe("4 players", () => {
             const names = ["Alice", "Bob", "Carol", "Doug"];
             const gs = new GameState(names);
