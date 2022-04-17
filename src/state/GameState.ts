@@ -28,6 +28,14 @@ import { TobaccoStorage } from "../buildings/TobaccoStorage";
 import { University } from "../buildings/University";
 import { Wharf } from "../buildings/Wharf";
 
+import { Settler } from "../roles/Settler";
+import { Mayor } from "../roles/Mayor";
+import { Builder } from "../roles/Builder";
+import { Craftsman } from "../roles/Craftsman";
+import { Trader } from "../roles/Trader";
+import { Captain } from "../roles/Captain";
+import { Prospector } from "../roles/Prospector";
+
 import { shuffle } from "lodash";
 
 export class GameState {
@@ -137,13 +145,20 @@ export class GameState {
     }
 
     initRoles(): void {
-        const roleNames = ["settler", "mayor", "builder", "craftsman", "trader", "captain"];
-        this.roles = roleNames.map(n => new Role(n));
+        this.roles = [
+            new Settler(),
+            new Mayor(),
+            new Builder(),
+            new Craftsman(),
+            new Trader(),
+            new Captain(),
+        ];
+
         if (this.players.length >= 4) {
-            this.roles.push(new Role("prospector"));
+            this.roles.push(new Prospector());
         }
         if (this.players.length == 5) {
-            this.roles.push(new Role("prospector"));
+            this.roles.push(new Prospector());
         }
 
         this.availableRoles = this.roles.map(r => r);
