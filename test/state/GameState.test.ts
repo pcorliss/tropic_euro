@@ -1,8 +1,12 @@
 import { GameState } from "../../src/state/GameState";
 
 describe("GameState", () => {
-    const names = ["Alice", "Bob", "Carol"];
-    const gs = new GameState(names);
+    let gs: GameState = null;
+
+    beforeEach(() => {
+        const names = ["Alice", "Bob", "Carol"];
+        gs = new GameState(names);
+    });
 
     describe("constructor", () => {
         it("inits players", () => {
@@ -71,9 +75,19 @@ describe("GameState", () => {
             expect(gs.currentPlayerIdx).toBe(0);
         });
 
+        it("inits current turn player", () => {
+            expect(gs.currentTurnPlayerIdx).toBe(0);
+        });
+
         describe("currentPlayer", () => {
             it("returns the current player", () => {
                 expect(gs.currentPlayer()).toBe(gs.players[0]);
+            });
+        });
+
+        describe("currentTurnPlayer", () => {
+            it("returns the current turn player", () => {
+                expect(gs.currentTurnPlayer()).toBe(gs.players[0]);
             });
         });
 
@@ -83,9 +97,22 @@ describe("GameState", () => {
             });
         });
 
+        describe("getAvailableActions", () => {
+            it("returns an empty array if player is not current player", () => {
+                expect(gs.getAvailableActions(gs.players[1])).toHaveLength(0);
+            });
+
+            it("current role is null it returns available role actions", () => {
+                expect(gs.getAvailableActions(gs.players[0])).toHaveLength(6);
+                expect(gs.getAvailableActions(gs.players[0])[0].key).toBe("chooseSettler");
+            });
+        });
+
         describe("4 players", () => {
-            const names = ["Alice", "Bob", "Carol", "Doug"];
-            const gs = new GameState(names);
+            beforeEach(() => {
+                const names = ["Alice", "Bob", "Carol", "Dave"];
+                gs = new GameState(names);
+            });
 
             it("gives out 2 indigo and 2 corn", () => {
                 expect(gs.plantationSupply.length).toBe(41);
@@ -125,8 +152,10 @@ describe("GameState", () => {
         });
 
         describe("5 players", () => {
-            const names = ["Alice", "Bob", "Carol", "Doug", "Erica"];
-            const gs = new GameState(names);
+            beforeEach(() => {
+                const names = ["Alice", "Bob", "Carol", "Dave", "Erica"];
+                gs = new GameState(names);
+            });
 
             it("gives out 3 indigo and 2 corn", () => {
                 expect(gs.plantationSupply.length).toBe(39);

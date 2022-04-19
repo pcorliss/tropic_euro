@@ -3,6 +3,7 @@ import { Building } from "./Building";
 import { Plantation } from "./Plantation";
 import { Role } from "./Role";
 import { Ship } from "./Ship";
+import { Action } from "./Action";
 
 import { CityHall } from "../buildings/CityHall";
 import { CoffeeRoaster } from "../buildings/CoffeeRoaster";
@@ -55,6 +56,8 @@ export class GameState {
     roundCounter = 0;
     governorIdx = 0;
     currentPlayerIdx = 0;
+    currentTurnPlayerIdx = 0;
+    currentRole: Role = null;
 
     initPlantations(): void {
         // 8 quarry tiles and 50 plantation tiles: 8 coffee,
@@ -230,6 +233,10 @@ export class GameState {
         return this.players[this.currentPlayerIdx];
     }
 
+    currentTurnPlayer(): Player {
+        return this.players[this.currentTurnPlayerIdx];
+    }
+
     governor(): Player {
         return this.players[this.governorIdx];
     }
@@ -245,6 +252,21 @@ export class GameState {
         this.initRoles();
     }
 
-    // player calls availableActions()
-    // if player turn they choose role or action as part of another player's role
+    // function on role called `choose`, key mapping,
+    // role itself could return the mapping so things stay consistent
+    // maybe the object is more complicated
+    // maybe an Action composed of a key name, picture, description, and function
+    // function doesn't change because game state doesn't mutate until it is applied
+    // gamestate has apply method which calls function
+    // also validates that the action is still valid
+
+
+    getAvailableActions(player: Player): Action[] {
+        if(this.currentTurnPlayer() != player) { return []; }
+        if(this.currentRole === null) {
+            return this.availableRoles.map((role) => role.chooseAction);
+        }
+        // return this.currentRole.getAvailableActions(player);
+        return [];
+    }
 }
