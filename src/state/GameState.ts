@@ -271,4 +271,10 @@ export class GameState {
         // return this.currentRole.getAvailableActions(player);
         return [];
     }
+
+    applyAction(player: Player, key: string): void {
+        this.getAvailableActions(player)
+            .find(action => action.key == key)
+            ?.apply(this, player);
+    }
 }

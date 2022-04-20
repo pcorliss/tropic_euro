@@ -108,6 +108,18 @@ describe("GameState", () => {
             });
         });
 
+        describe("applyAction", () => {
+            it("applies an action using the key", () => {
+                gs.applyAction(gs.players[0], "chooseTrader");
+                expect(gs.currentRole.name).toBe("Trader");
+            });
+
+            it("does nothing if the key can not be found", () => {
+                gs.applyAction(gs.players[0], "fake");
+                expect(gs.currentRole).toBeNull;
+            });
+        });
+
         describe("4 players", () => {
             beforeEach(() => {
                 const names = ["Alice", "Bob", "Carol", "Dave"];

@@ -1,4 +1,3 @@
-* Roles enumerated
 * Choose a role
 * Available actions
 * Game flow
