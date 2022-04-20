@@ -6,8 +6,4 @@ export class Trader extends Role {
     name = "Trader";
     description = "";
     phase = "trading";
-    chooseAction = new Action(
-        "chooseTrader",
-        (gs: GameState, p: Player) => {return;},
-    );
 }

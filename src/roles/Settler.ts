@@ -6,8 +6,4 @@ export class Settler extends Role {
     name = "Settler";
     description = "";
     phase = "settling";
-    chooseAction = new Action(
-        "chooseSettler",
-        (gs: GameState, p: Player) => {return;},
-    );
 }

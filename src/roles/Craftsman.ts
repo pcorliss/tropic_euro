@@ -6,8 +6,4 @@ export class Craftsman extends Role {
     name = "Craftsman";
     description = "";
     phase = "production";
-    chooseAction = new Action(
-        "chooseCraftsman",
-        (gs: GameState, p: Player) => {return;},
-    );
 }

@@ -6,8 +6,4 @@ export class Builder extends Role {
     name = "Builder";
     description = "";
     phase = "building";
-    chooseAction = new Action(
-        "chooseBuilder",
-        (gs: GameState, p: Player) => {return;},
-    );
 }

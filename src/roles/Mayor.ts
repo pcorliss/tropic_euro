@@ -6,8 +6,4 @@ export class Mayor extends Role {
     name = "Mayor";
     description = "";
     phase = "mayoring";
-    chooseAction = new Action(
-        "chooseMayor",
-        (gs: GameState, p: Player) => {return;},
-    );
 }

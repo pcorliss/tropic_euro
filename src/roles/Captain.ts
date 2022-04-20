@@ -6,8 +6,4 @@ export class Captain extends Role {
     name = "Captain";
     description = "";
     phase = "shipping";
-    chooseAction = new Action(
-        "chooseCaptain",
-        (gs: GameState, p: Player) => {return;},
-    );
 }
