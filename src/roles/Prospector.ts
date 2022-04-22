@@ -8,7 +8,7 @@ export class Prospector extends Role {
     phase = "prospecting";
 
     chooseProspector = (gs: GameState, player: Player) => {
-        this.chooseThisRole(gs);
+        this.chooseThisRole(gs, player);
         player.doubloons++;
         gs.endRole();
         return;
