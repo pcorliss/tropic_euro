@@ -10,10 +10,7 @@ export class Prospector extends Role {
     chooseProspector = (gs: GameState, player: Player) => {
         this.chooseThisRole(gs);
         player.doubloons++;
-        // gs.endRole();
-        gs.currentPlayerIdx++;
-        gs.currentPlayerIdx %= gs.players.length;
-        gs.currentRole = null;
+        gs.endRole();
         return;
     };
 

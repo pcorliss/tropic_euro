@@ -246,6 +246,7 @@ export class GameState {
     constructor(playerNames: string[]) {
         const shuffledNames = shuffle(playerNames);
         this.players = shuffledNames.map(n => new Player(n));
+        this.players.forEach((p) => p.doubloons = this.players.length - 1);
         this.initBuildings();
         this.initPlantations();
         this.initColonists();
@@ -253,15 +254,6 @@ export class GameState {
         this.initTradeShips();
         this.initRoles();
     }
-
-    // function on role called `choose`, key mapping,
-    // role itself could return the mapping so things stay consistent
-    // maybe the object is more complicated
-    // maybe an Action composed of a key name, picture, description, and function
-    // function doesn't change because game state doesn't mutate until it is applied
-    // gamestate has apply method which calls function
-    // also validates that the action is still valid
-
 
     getAvailableActions(player: Player): Action[] {
         if(this.currentTurnPlayer() != player) { return []; }
@@ -276,5 +268,12 @@ export class GameState {
         this.getAvailableActions(player)
             .find(action => action.key == key)
             ?.apply(this, player);
+    }
+
+    endRole(): void {
+        this.currentRole = null;
+        this.currentPlayerIdx++;
+        this.currentPlayerIdx %= this.players.length;
+        return;
     }
 }

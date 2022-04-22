@@ -13,6 +13,10 @@ describe("GameState", () => {
             expect(gs.players.length).toBe(3);
         });
 
+        it("inits doubloons", () => {
+            expect(gs.players[0].doubloons).toBe(2);
+        });
+
         it("inits buildings", () => {
             expect(gs.buildings[0].name).toBe("Small Indigo Plant");
             expect(gs.buildings.length).toBe(49);
@@ -120,10 +124,42 @@ describe("GameState", () => {
             });
         });
 
+        describe("endRole", () => {
+            it ("sets the current role to null", () => {
+                gs.currentRole = gs.availableRoles.pop();
+                gs.endRole();
+                expect(gs.currentRole).toBeNull;
+            });
+
+            it ("increments the player idx", () => {
+                gs.endRole();
+                expect(gs.currentPlayerIdx).toBe(1);
+            });
+
+            it ("resets the player idx to zero if it goes beyond the end", () => {
+                gs.currentPlayerIdx = gs.players.length - 1;
+                gs.endRole();
+                expect(gs.currentPlayerIdx).toBe(0);
+            });
+
+            // it ("ends the round if all players have gone");
+        });
+
+        describe("endRound", () => {
+        //     it ("advances the governor");
+        //     it ("adds dobloons to each unchosen role");
+        //     it ("resets the player idx to zero if it goes beyond the end");
+        //     it ("ends the game if the end game conditions have been met");
+        });
+
         describe("4 players", () => {
             beforeEach(() => {
                 const names = ["Alice", "Bob", "Carol", "Dave"];
                 gs = new GameState(names);
+            });
+
+            it("inits doubloons", () => {
+                expect(gs.players[0].doubloons).toBe(3);
             });
 
             it("gives out 2 indigo and 2 corn", () => {
@@ -167,6 +203,10 @@ describe("GameState", () => {
             beforeEach(() => {
                 const names = ["Alice", "Bob", "Carol", "Dave", "Erica"];
                 gs = new GameState(names);
+            });
+
+            it("inits doubloons", () => {
+                expect(gs.players[0].doubloons).toBe(4);
             });
 
             it("gives out 3 indigo and 2 corn", () => {
