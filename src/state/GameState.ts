@@ -274,6 +274,16 @@ export class GameState {
         this.currentRole = null;
         this.currentPlayerIdx++;
         this.currentPlayerIdx %= this.players.length;
+        if (this.currentPlayerIdx == this.governorIdx) {
+            this.endRound();
+        }
+        return;
+    }
+
+    endRound(): void {
+        this.governorIdx++;
+        this.currentPlayerIdx = this.governorIdx;
+        this.availableRoles.forEach((r) => r.doubloons++);
         return;
     }
 }

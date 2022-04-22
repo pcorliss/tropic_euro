@@ -138,18 +138,38 @@ describe("GameState", () => {
 
             it ("resets the player idx to zero if it goes beyond the end", () => {
                 gs.currentPlayerIdx = gs.players.length - 1;
+                gs.governorIdx = 1;
                 gs.endRole();
                 expect(gs.currentPlayerIdx).toBe(0);
             });
 
-            // it ("ends the round if all players have gone");
+            it ("ends the round if all players have gone", () => {
+                gs.currentPlayerIdx = gs.players.length - 1;
+                gs.endRole();
+                expect(gs.governorIdx).toBe(1);
+            });
         });
 
         describe("endRound", () => {
-        //     it ("advances the governor");
-        //     it ("adds dobloons to each unchosen role");
-        //     it ("resets the player idx to zero if it goes beyond the end");
-        //     it ("ends the game if the end game conditions have been met");
+            it ("advances the governor", () => {
+                gs.endRound();
+                expect(gs.governorIdx).toBe(1);
+            });
+
+            it ("advances the player to the governor", () => {
+                gs.endRound();
+                expect(gs.currentPlayerIdx).toBe(1);
+            });
+
+            it ("adds doubloons to each unchosen role", () => {
+                gs.availableRoles = gs.availableRoles.slice(0,2);
+                gs.availableRoles[0].doubloons++;
+                gs.endRound();
+                expect(gs.availableRoles[0].doubloons).toBe(2);
+                expect(gs.availableRoles[1].doubloons).toBe(1);
+            });
+
+            // it ("ends the game if the end game conditions have been met");
         });
 
         describe("4 players", () => {
