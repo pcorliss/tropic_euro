@@ -1,12 +1,13 @@
 import { Action } from "./Action";
 import { GameState } from "./GameState";
-import { Player } from "./Player";
 
 export class Role {
     name: string;
     description: string;
     phase: string;
-    chooseThisRole = (gs: GameState, p: Player) => {
+    roleActions: Action[] = [];
+
+    chooseThisRole = (gs: GameState) => {
         gs.currentRole = this;
         const index = gs.availableRoles.indexOf(this, 0);
         if (index > -1) {

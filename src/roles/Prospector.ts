@@ -6,6 +6,7 @@ export class Prospector extends Role {
     name = "Prospector";
     description = "";
     phase = "prospecting";
+
     // chooseAction = new Action("chooseProspector", this.chooseThisRole);
     // (gs: GameState, p: Player) => {
     //     return;

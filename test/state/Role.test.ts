@@ -9,14 +9,14 @@ describe("Role", () => {
 
         it("sets the gamestate's current role", () => {
             gs.availableRoles.push(role);
-            role.chooseThisRole(gs, gs.players[0]);
+            role.chooseThisRole(gs);
             expect(gs.currentRole).toBe(role);
         });
 
         it("removes the role from available", () => {
             gs.availableRoles.push(role);
             const expectedLength = gs.availableRoles.length - 1;
-            role.chooseThisRole(gs, gs.players[0]);
+            role.chooseThisRole(gs);
             expect(gs.availableRoles.length).toBe(expectedLength);
         });
     });
