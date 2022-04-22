@@ -1,5 +1,6 @@
 import { Action } from "./Action";
 import { GameState } from "./GameState";
+import { Player } from "./Player";
 
 export class Role {
     name: string;
@@ -7,7 +8,7 @@ export class Role {
     phase: string;
     roleActions: Action[] = [];
 
-    chooseThisRole = (gs: GameState) => {
+    chooseThisRole: (gs: GameState, player?: Player) => void = (gs: GameState) => {
         gs.currentRole = this;
         const index = gs.availableRoles.indexOf(this, 0);
         if (index > -1) {
