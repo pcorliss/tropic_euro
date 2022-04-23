@@ -8,6 +8,7 @@ export class Role {
     phase: string;
     roleActions: Action[] = [];
     doubloons = 0;
+    availableActions(gs?: GameState, player?: Player): Action[] {return [];}
 
     chooseThisRole: (gs: GameState, player?: Player) => void = (gs: GameState, player: Player) => {
         gs.currentRole = this;
