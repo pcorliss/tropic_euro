@@ -270,10 +270,23 @@ export class GameState {
             ?.apply(this, player);
     }
 
+    advancePlayer(): void {
+        let lastPlayerIdx = this.currentPlayerIdx - 1 + this.players.length;
+        lastPlayerIdx %= this.players.length;
+        if (this.currentTurnPlayerIdx != lastPlayerIdx) {
+            this.currentTurnPlayerIdx++;
+            this.currentTurnPlayerIdx %= this.players.length;
+            return;
+        }
+
+        this.endRole();
+    }
+
     endRole(): void {
         this.currentRole = null;
         this.currentPlayerIdx++;
         this.currentPlayerIdx %= this.players.length;
+        this.currentTurnPlayerIdx = this.currentPlayerIdx;
         if (this.currentPlayerIdx == this.governorIdx) {
             this.endRound();
         }

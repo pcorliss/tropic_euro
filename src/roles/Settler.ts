@@ -31,6 +31,16 @@ export class Settler extends Role {
             plantationTypes.add("quarry");
         }
 
+        actions.push(
+            new Action(
+                "skip",
+                (gs: GameState, player: Player): void => {
+                    gs.advancePlayer();
+                    return;
+                },
+            )
+        );
+
         for (const p of plantationTypes) {
             actions.push(
                 new Action(
@@ -58,7 +68,7 @@ export class Settler extends Role {
                             gs.quarries--;
                         }
 
-                        gs.currentTurnPlayerIdx++;
+                        gs.advancePlayer();
                         return;
                     }
                 )
@@ -67,7 +77,4 @@ export class Settler extends Role {
 
         return actions;
     }
-
-    // ChoosePlantation for all good types
-    // ChooseQuarry
 }

@@ -148,6 +148,36 @@ describe("GameState", () => {
                 gs.endRole();
                 expect(gs.governorIdx).toBe(1);
             });
+
+            it("it resets the current turn player", () => {
+                gs.currentTurnPlayerIdx = 2;
+                gs.endRole();
+                expect(gs.currentTurnPlayerIdx).toBe(gs.currentPlayerIdx);
+            });
+        });
+
+        describe("advancePlayer", () => {
+            it("ends the role if the turn player is the last one", () => {
+                gs.currentTurnPlayerIdx = 2;
+                gs.currentRole = gs.availableRoles.pop();
+                gs.advancePlayer();
+                expect(gs.currentRole).toBeNull();
+            });
+
+            it("handles the first player being the last player", () => {
+                gs.currentTurnPlayerIdx = 0;
+                gs.currentPlayerIdx = 1;
+                gs.currentRole = gs.availableRoles.pop();
+                gs.advancePlayer();
+                expect(gs.currentRole).toBeNull();
+            });
+
+            it("does nothing if the current turn player is not the last", () => {
+                gs.currentRole = gs.availableRoles.pop();
+                const role = gs.currentRole;
+                gs.advancePlayer();
+                expect(gs.currentRole).toBe(role);
+            });
         });
 
         describe("endRound", () => {

@@ -46,9 +46,9 @@ describe("Settler", () => {
                 new Plantation("indigo"),
                 new Plantation("indigo"),
             ];
-            gs.currentTurnPlayerIdx = 1;
-            const actions = role.availableActions(gs, gs.players[1]);
-            expect(actions).toHaveLength(1);
+            const actions = role.availableActions(gs, player);
+            const indigoActions = actions.filter((a) => a.key == "chooseIndigo");
+            expect(indigoActions).toHaveLength(1);
         });
 
         it("returns nothing if the player is not the current turn player", () => {
@@ -107,6 +107,23 @@ describe("Settler", () => {
                 const a = actions[0];
                 a.apply(gs, player);
                 expect(gs.currentTurnPlayerIdx).toBe(1);
+            });
+
+            it("allows the player to not take a plantation", () => {
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "skip");
+                const expected = player.board.plantations.length;
+                a.apply(gs, player);
+                expect(player.board.plantations.length).toBe(expected);
+            });
+
+            it("ends the role if all players have gone", () => {
+                gs.currentTurnPlayerIdx = 2;
+                gs.currentPlayerIdx = 0;
+                const actions = role.availableActions(gs, gs.players[2]);
+                const a = actions[0];
+                a.apply(gs, gs.players[2]);
+                expect(gs.currentPlayerIdx).toBe(1);
             });
         });
     });
