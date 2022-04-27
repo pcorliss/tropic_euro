@@ -58,6 +58,8 @@ export class GameState {
     currentPlayerIdx = 0;
     currentTurnPlayerIdx = 0;
     currentRole: Role = null;
+    tradingHouse: ("corn" | "indigo" | "sugar" | "tobacco" | "coffee")[] = [];
+
     goods: Record<"corn" | "indigo" | "sugar" | "tobacco" | "coffee", number> = {
         corn: 10,
         indigo: 11,

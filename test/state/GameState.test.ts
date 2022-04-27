@@ -34,6 +34,10 @@ describe("GameState", () => {
             expect(gs.quarries).toBe(8);
         });
 
+        it("inits trading house", () => {
+            expect(gs.tradingHouse).toHaveLength(0);
+        });
+
         it("inits colonists", () => {
             expect(gs.colonists).toBe(55);
         });
