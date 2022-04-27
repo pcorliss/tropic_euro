@@ -17,6 +17,11 @@ export class Trader extends Role {
         "coffee": 4,
     };
 
+    endRole(gs?: GameState, player?: Player): void {
+        if (gs.tradingHouse.length >= 4) { gs.tradingHouse = []; }
+        return;
+    }
+
     // handles office & markets
     availableActions(gs?: GameState, player?: Player): Action[] {
         const actions: Action[] = [];

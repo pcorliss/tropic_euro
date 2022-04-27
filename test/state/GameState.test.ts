@@ -129,8 +129,11 @@ describe("GameState", () => {
         });
 
         describe("endRole", () => {
-            it ("sets the current role to null", () => {
+            beforeEach(() => {
                 gs.currentRole = gs.availableRoles.pop();
+            });
+
+            it ("sets the current role to null", () => {
                 gs.endRole();
                 expect(gs.currentRole).toBeNull;
             });

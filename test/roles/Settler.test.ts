@@ -12,6 +12,7 @@ describe("Settler", () => {
     beforeEach(() => {
         gs = new GameState(["Alice", "Bob", "Carol"]);
         role = gs.availableRoles.find((r) => r instanceof Settler);
+        gs.currentRole = role;
         player = gs.players[0];
     });
 

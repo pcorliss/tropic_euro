@@ -286,6 +286,7 @@ export class GameState {
     }
 
     endRole(): void {
+        this.currentRole.endRole(this);
         this.currentRole = null;
         this.currentPlayerIdx++;
         this.currentPlayerIdx %= this.players.length;

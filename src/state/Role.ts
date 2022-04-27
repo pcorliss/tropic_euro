@@ -9,6 +9,7 @@ export class Role {
     roleActions: Action[] = [];
     doubloons = 0;
     availableActions(gs?: GameState, player?: Player): Action[] {return [];}
+    endRole(gs?: GameState, player?: Player): void {return;}
 
     chooseThisRole: (gs: GameState, player?: Player) => void = (gs: GameState, player: Player) => {
         gs.currentRole = this;

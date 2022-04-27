@@ -12,6 +12,7 @@ describe("Trader", () => {
     beforeEach(() => {
         gs = new GameState(["Alice", "Bob", "Carol"]);
         role = gs.availableRoles.find((r) => r instanceof Trader);
+        gs.currentRole = role;
         player = gs.players[0];
     });
 
@@ -98,8 +99,27 @@ describe("Trader", () => {
                 expect(gs.currentTurnPlayerIdx).toBe(1);
             });
 
-            // xit("clears the trading house at the end of the round", () => {});
-            // xit("only returns actions for goods the palyer has", () => {});
+            it("clears the trading house at the end of the round if it's full", () => {
+                gs.currentTurnPlayerIdx = 2;
+                gs.tradingHouse = ["indigo", "sugar", "coffee"];
+                player = gs.players[2];
+                player.goods["corn"] = 1;
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "tradeCorn");
+                a.apply(gs, player);
+                expect(gs.tradingHouse).toHaveLength(0);
+            });
+
+            it("doesn't clear the trading house at the end of the round if it's not full", () => {
+                gs.currentTurnPlayerIdx = 2;
+                gs.tradingHouse = ["indigo", "sugar"];
+                player = gs.players[2];
+                player.goods["corn"] = 1;
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "tradeCorn");
+                a.apply(gs, player);
+                expect(gs.tradingHouse).toHaveLength(3);
+            });
 
             const goodValues = {
                 "corn": 0,
