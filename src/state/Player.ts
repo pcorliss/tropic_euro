@@ -1,10 +1,11 @@
 import { Board } from "./Board";
+import { Good } from "./Good";
 
 export class Player {
     name: string;
     victoryPoints = 0;
     doubloons = 0;
-    goods: Record<"corn" | "indigo" | "sugar" | "tobacco" | "coffee", number> = {
+    goods: Record<Good, number> = {
         corn: 0,
         indigo: 0,
         sugar: 0,

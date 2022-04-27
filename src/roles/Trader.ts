@@ -2,7 +2,8 @@ import { Role } from "../state/Role";
 import { Action } from "../state/Action";
 import { GameState } from "../state/GameState";
 import { Player } from "../state/Player";
-import { filter, map } from "lodash";
+import { Good } from "../state/Good";
+
 export class Trader extends Role {
     name = "Trader";
     description = "";
@@ -15,18 +16,12 @@ export class Trader extends Role {
         if (gs.currentTurnPlayer() != player) { return []; }
         if (gs.tradingHouse.length >= 4) { return []; }
 
-
-        // const entries = Object.entries(player.goods);
-        // const filteredEntries = entries.filter(([g, n]) => n > 0);
-        // const mappedEntries = filteredEntries.map(([g,n]) => <"corn"|"indigo"|"sugar"|"tobacco"|"coffee">g);
-
-        // const playerGoods = new Set<"corn"|"indigo"|"sugar"|"tobacco"|"coffee">(
         const playerGoods = new Set(
             Object.entries(player.goods)
                 .filter(([g, n]) => n > 0)
-                .map(([g,n]) => <"corn"|"indigo"|"sugar"|"tobacco"|"coffee">g)
+                .map(([g,n]) => <Good>g)
         );
-        const tradingHouseGoods = new Set<"corn"|"indigo"|"sugar"|"tobacco"|"coffee">(gs.tradingHouse);
+        const tradingHouseGoods = new Set<Good>(gs.tradingHouse);
 
         // Set Difference: playerGoods - tradingHouseGoods;
         const tradeableGoods = new Set([...playerGoods].filter(g => !tradingHouseGoods.has(g)));

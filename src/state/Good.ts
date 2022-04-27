@@ -1,0 +1,1 @@
+export type Good = "corn" | "indigo" | "sugar" | "tobacco" | "coffee";

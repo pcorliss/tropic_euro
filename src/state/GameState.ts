@@ -4,6 +4,7 @@ import { Plantation } from "./Plantation";
 import { Role } from "./Role";
 import { Ship } from "./Ship";
 import { Action } from "./Action";
+import { Good } from "./Good";
 
 import { CityHall } from "../buildings/CityHall";
 import { CoffeeRoaster } from "../buildings/CoffeeRoaster";
@@ -58,9 +59,9 @@ export class GameState {
     currentPlayerIdx = 0;
     currentTurnPlayerIdx = 0;
     currentRole: Role = null;
-    tradingHouse: ("corn" | "indigo" | "sugar" | "tobacco" | "coffee")[] = [];
+    tradingHouse: Good[] = [];
 
-    goods: Record<"corn" | "indigo" | "sugar" | "tobacco" | "coffee", number> = {
+    goods: Record<Good, number> = {
         corn: 10,
         indigo: 11,
         sugar: 11,
@@ -71,7 +72,7 @@ export class GameState {
     initPlantations(): void {
         // 8 quarry tiles and 50 plantation tiles: 8 coffee,
         // 9 tobacco, 10 corn, 11 sugar, and 12 indigo
-        const plantDistr: Record<"corn" | "indigo" | "sugar" | "tobacco" | "coffee", number> = {
+        const plantDistr: Record<Good, number> = {
             corn: 10,
             indigo: 12,
             sugar: 11,
