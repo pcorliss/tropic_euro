@@ -2,6 +2,7 @@ import { GameState } from "../../src/state/GameState";
 import { Trader} from "../../src/roles/Trader";
 import { Role } from "../../src/state/Role";
 import { Player} from "../../src/state/Player";
+import { Good} from "../../src/state/Good";
 
 describe("Trader", () => {
     let gs: GameState = null;
@@ -53,13 +54,23 @@ describe("Trader", () => {
         });
 
         describe("action apply",() => {
-            it("allows the player to not trade", () => {
-                player.goods["corn"] = 1;
-                const actions = role.availableActions(gs, player);
-                const a = actions.find((a) => a.key == "skip");
-                const expected = player.goods;
-                a.apply(gs, player);
-                expect(player.goods).toBe(expected);
+            describe("skip",() => {
+                it("allows the player to not trade", () => {
+                    player.goods["corn"] = 1;
+                    const actions = role.availableActions(gs, player);
+                    const a = actions.find((a) => a.key == "skip");
+                    const expected = player.goods;
+                    a.apply(gs, player);
+                    expect(player.goods).toBe(expected);
+                });
+
+                it("advances the player", () => {
+                    player.goods["corn"] = 1;
+                    const actions = role.availableActions(gs, player);
+                    const a = actions.find((a) => a.key == "skip");
+                    a.apply(gs, player);
+                    expect(gs.currentTurnPlayerIdx).toBe(1);
+                });
             });
 
             it("removes the good from the player", () => {
@@ -70,11 +81,25 @@ describe("Trader", () => {
                 expect(player.goods["corn"]).toBe(1);
             });
 
-            // xit("adds the good to the trading house", () => {});
+            it("adds the good to the trading house", () => {
+                player.goods["corn"] = 1;
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "tradeCorn");
+                expect(gs.tradingHouse).toHaveLength(0);
+                a.apply(gs, player);
+                expect(gs.tradingHouse).toContain("corn");
+            });
+
+            it("advances the player", () => {
+                player.goods["corn"] = 1;
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "tradeCorn");
+                a.apply(gs, player);
+                expect(gs.currentTurnPlayerIdx).toBe(1);
+            });
+
             // xit("clears the trading house at the end of the round", () => {});
             // xit("only returns actions for goods the palyer has", () => {});
-            // it advances the player
-            // it advances the player if skipped
 
             const goodValues = {
                 "corn": 0,
@@ -84,16 +109,17 @@ describe("Trader", () => {
                 "coffee": 4,
             };
 
-            // for(const [good, value] of Object.entries(goodValues)) {
-            //     xit(`adds ${value} doubloons for trading ${good}`, () => {
-            //         const actions = role.availableActions(gs, player);
-            //         const actionKey = `trade${good[0].toUpperCase()}${good.slice(1)}`;
-            //         const a = actions.find((a) => a.key == actionKey);
-            //         const expected = player.doubloons + value;
-            //         a.apply(gs, player);
-            //         expect(player.doubloons).toBe(expected);
-            //     });
-            // }
+            for(const [good, value] of Object.entries(goodValues)) {
+                it(`adds ${value} doubloons for trading ${good}`, () => {
+                    player.goods[<Good>good] = 1;
+                    const actions = role.availableActions(gs, player);
+                    const actionKey = `trade${good[0].toUpperCase()}${good.slice(1)}`;
+                    const a = actions.find((a) => a.key == actionKey);
+                    const expected = player.doubloons + value;
+                    a.apply(gs, player);
+                    expect(player.doubloons).toBe(expected);
+                });
+            }
         });
     });
 });

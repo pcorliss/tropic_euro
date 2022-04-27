@@ -9,6 +9,14 @@ export class Trader extends Role {
     description = "";
     phase = "trading";
 
+    static goodValues = {
+        "corn": 0,
+        "indigo": 1,
+        "sugar": 2,
+        "tobacco": 3,
+        "coffee": 4,
+    };
+
     // handles office & markets
     availableActions(gs?: GameState, player?: Player): Action[] {
         const actions: Action[] = [];
@@ -35,7 +43,7 @@ export class Trader extends Role {
             new Action(
                 "skip",
                 (gs: GameState, player: Player): void => {
-                    // gs.advancePlayer();
+                    gs.advancePlayer();
                     return;
                 },
             )
@@ -48,7 +56,8 @@ export class Trader extends Role {
                     (gs: GameState, player: Player): void => {
                         gs.tradingHouse.push(g);
                         player.goods[g]--;
-                        // gs.advancePlayer();
+                        player.doubloons += Trader.goodValues[g];
+                        gs.advancePlayer();
                         return;
                     }
                 )
