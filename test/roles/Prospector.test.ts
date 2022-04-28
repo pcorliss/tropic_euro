@@ -30,7 +30,7 @@ describe("Prospector", () => {
         it("ends the role", () => {
             const expected = gs.currentPlayerIdx + 1;
             role.chooseAction.apply(gs, player);
-            expect(gs.currentRole).toBeNull;
+            expect(gs.currentRole).toBeNull();
             expect(gs.currentPlayerIdx).toBe(expected);
         });
     });

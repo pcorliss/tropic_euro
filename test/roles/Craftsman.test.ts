@@ -159,35 +159,121 @@ describe("Craftsman", () => {
         });
 
         it("desn't end the role", () => {
-            const expected = gs.currentPlayerIdx;
+            gs.goods.corn = 2;
+            player.board.plantations.push(new Plantation("corn"));
+            player.board.plantations[0].staffed = true;
+
             role.chooseAction.apply(gs, player);
+
+            expect(player.goods.corn).toBe(1);
             expect(gs.currentRole).toBe(role);
-            expect(gs.currentPlayerIdx).toBe(expected);
+            expect(gs.currentPlayerIdx).toBe(0);
+        });
+
+        it("ends the role if the supply is empty", () => {
+            gs.goods.corn = 1;
+            player.board.plantations.push(new Plantation("corn"));
+            player.board.plantations[0].staffed = true;
+
+            role.chooseAction.apply(gs, player);
+
+            expect(player.goods.corn).toBe(1);
+            expect(gs.currentRole).toBeNull();
+            expect(gs.currentPlayerIdx).toBe(1);
+        });
+
+        it("ends the role if the player didn't produce anything", () => {
+            role.chooseAction.apply(gs, player);
+
+            expect(player.goods.corn).toBe(0);
+            expect(gs.currentRole).toBeNull();
+            expect(gs.currentPlayerIdx).toBe(1);
         });
     });
 
-    // describe("availableActions", () => {
-    //     // xit("returns nothing if the first player is the current player");
-            // returns nothing if the supply is empty
-            // returns nothing if the player didn't produce anything
-            // returns an action for each good produced
+    describe("availableActions", () => {
+        it("returns nothing if we're not the current player", () => {
+            const actions = role.availableActions(gs, gs.players[1]);
+            expect(actions).toHaveLength(0);
+        });
 
-    //     describe("returns an action that", () => {
-    //         xit("allows the first player to choose their bonus good", () => {
-    //             const actions = role.availableActions(gs, player);
-    //             const a = actions[0];
-    //             a.apply(gs, player);
-    //             expect(gs.currentTurnPlayerIdx).toBe(1);
-    //         });
+        it("returns an action for each good produced", () => {
+            player.board.plantations.push(new Plantation("indigo"));
+            player.board.plantations.push(new Plantation("sugar"));
+            player.board.buildings.push(new SmallIndigoPlant());
+            player.board.buildings.push(new SmallSugarMill());
 
-    //         xit("ends the role", () => {
-    //             gs.currentTurnPlayerIdx = 2;
-    //             gs.currentPlayerIdx = 0;
-    //             const actions = role.availableActions(gs, gs.players[2]);
-    //             const a = actions[0];
-    //             a.apply(gs, gs.players[2]);
-    //             expect(gs.currentPlayerIdx).toBe(1);
-    //         });
-    //     });
-    // });
+            gs.players.forEach((p) => {
+                p.board.plantations.forEach((pl) => {
+                    pl.staffed = true;
+                });
+                p.board.buildings.forEach((pl) => {
+                    pl.staff = 1;
+                });
+            });
+
+            role.chooseAction.apply(gs, player);
+
+            const actions = role.availableActions(gs, player);
+            expect(actions).toHaveLength(2);
+            const actionNames = actions.map((a) => a.key);
+            expect(actionNames).toContain("chooseIndigo");
+            expect(actionNames).toContain("chooseSugar");
+        });
+
+        it("doesn't return actions when there is no supply", () => {
+            gs.goods.sugar = 1;
+            player.board.plantations.push(new Plantation("indigo"));
+            player.board.plantations.push(new Plantation("sugar"));
+            player.board.buildings.push(new SmallIndigoPlant());
+            player.board.buildings.push(new SmallSugarMill());
+
+            gs.players.forEach((p) => {
+                p.board.plantations.forEach((pl) => {
+                    pl.staffed = true;
+                });
+                p.board.buildings.forEach((pl) => {
+                    pl.staff = 1;
+                });
+            });
+
+            role.chooseAction.apply(gs, player);
+
+            const actions = role.availableActions(gs, player);
+            expect(actions).toHaveLength(1);
+            const actionNames = actions.map((a) => a.key);
+            expect(actionNames).toContain("chooseIndigo");
+        });
+
+        describe("returns an action that", () => {
+            beforeEach(() => {
+                player.board.plantations.push(new Plantation("indigo"));
+                player.board.buildings.push(new SmallIndigoPlant());
+    
+                gs.players.forEach((p) => {
+                    p.board.plantations.forEach((pl) => {
+                        pl.staffed = true;
+                    });
+                    p.board.buildings.forEach((pl) => {
+                        pl.staff = 1;
+                    });
+                });
+            });
+
+            it("allows the first player to choose their bonus good", () => {
+                role.chooseAction.apply(gs, player);
+                const actions = role.availableActions(gs, player);
+                actions[0].apply(gs, player);
+                expect(player.goods.indigo).toBe(2);
+            });
+
+            it("ends the role", () => {
+                role.chooseAction.apply(gs, player);
+                const actions = role.availableActions(gs, player);
+                actions[0].apply(gs, player);
+                expect(gs.currentPlayerIdx).toBe(1);
+                expect(gs.currentRole).toBeNull();
+            });
+        });
+    });
 });

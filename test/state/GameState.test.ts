@@ -124,7 +124,7 @@ describe("GameState", () => {
 
             it("does nothing if the key can not be found", () => {
                 gs.applyAction(gs.players[0], "fake");
-                expect(gs.currentRole).toBeNull;
+                expect(gs.currentRole).toBeNull();
             });
         });
 
@@ -135,7 +135,7 @@ describe("GameState", () => {
 
             it ("sets the current role to null", () => {
                 gs.endRole();
-                expect(gs.currentRole).toBeNull;
+                expect(gs.currentRole).toBeNull();
             });
 
             it ("increments the player idx", () => {

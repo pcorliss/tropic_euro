@@ -7,8 +7,10 @@ export class Craftsman extends Role {
     name = "Craftsman";
     description = "";
     phase = "production";
+    firstPlayerGoodsProduced: Good[];
     chooseCraftsman= (gs: GameState, player: Player) => {
         this.chooseThisRole(gs, player);
+        this.firstPlayerGoodsProduced = [];
         for(let i = 0; i < gs.players.length; i++) {
             const p = gs.players[(i + gs.currentPlayerIdx) % gs.players.length];
             const plants = p.board.plantations
@@ -40,8 +42,17 @@ export class Craftsman extends Role {
                 );
                 p.goods[pl] += production;
                 gs.goods[pl] -= production;
+                if (i == 0 && production > 0) {
+                    this.firstPlayerGoodsProduced.push(pl);
+                }
             });
         }
+
+
+        if (this.firstPlayerGoodsProduced.every((g) => gs.goods[g] == 0)) {
+            gs.endRole();
+        }
+
         return;
     };
 
@@ -50,5 +61,31 @@ export class Craftsman extends Role {
             `choose${this.name}`,
             this.chooseCraftsman,
         );
+    }
+    availableActions(gs?: GameState, player?: Player): Action[] {
+        const actions: Action[] = [];
+
+        if (gs.currentTurnPlayer() != player) {
+            return actions;
+        }
+
+        this.firstPlayerGoodsProduced
+            .filter((g) => gs.goods[g] > 0)
+            .forEach((g) => {
+                actions.push(
+                    new Action(
+                        `choose${g[0].toUpperCase()}${g.slice(1)}`,
+                        (gs: GameState, player: Player): void => {
+                            player.goods[g]++;
+                            gs.goods[g]--;
+                            gs.endRole();
+                            return;
+                        },
+                    )
+                );
+            }
+        );
+
+        return actions;
     }
 }

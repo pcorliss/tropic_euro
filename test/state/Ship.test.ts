@@ -14,7 +14,7 @@ describe("Ship", () => {
 
         it("goodType is nil", () => {
             const s = new Ship(1);
-            expect(s.goodType).toBeNull;
+            expect(s.goodType).toBeNull();
         });
     });
 });
