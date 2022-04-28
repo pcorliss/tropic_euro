@@ -1,9 +1,10 @@
 import { Building } from "../state/Building";
+import { Good } from "../state/Good";
 
 export class CoffeeRoaster extends Building {
     name = "Coffee Roaster";
     production = true;
-    productionType = "coffee";
+    productionType: Good = "coffee";
     description = "";
     staffSpots = 2;
     size = 1;

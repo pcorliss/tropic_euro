@@ -157,12 +157,13 @@ describe("Craftsman", () => {
             expect(gs.players[1].goods.corn).toBe(2);
             expect(gs.players[2].goods.corn).toBe(1);
         });
-        // xit("desn't end the role", () => {
-        //     const expected = gs.currentPlayerIdx + 1;
-        //     role.chooseAction.apply(gs, player);
-        //     expect(gs.currentRole).toBeNull;
-        //     expect(gs.currentPlayerIdx).toBe(expected);
-        // });
+
+        it("desn't end the role", () => {
+            const expected = gs.currentPlayerIdx;
+            role.chooseAction.apply(gs, player);
+            expect(gs.currentRole).toBe(role);
+            expect(gs.currentPlayerIdx).toBe(expected);
+        });
     });
 
     // describe("availableActions", () => {

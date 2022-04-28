@@ -1,7 +1,9 @@
+import { Good } from "./Good";
+
 export class Building {
     name: string;
     production: boolean;
-    productionType: string;
+    productionType: Good;
     description: string;
     staffSpots: number;
     size: number;

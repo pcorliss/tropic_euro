@@ -1,9 +1,10 @@
 import { Building } from "../state/Building";
+import { Good } from "../state/Good";
 
 export class LargeSugarMill extends Building {
     name = "Large Sugar Mill";
     production = true;
-    productionType = "sugar";
+    productionType: Good = "sugar";
     description = "";
     staffSpots = 3;
     size = 1;

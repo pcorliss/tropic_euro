@@ -15,34 +15,33 @@ export class Craftsman extends Role {
                 .filter((pl) => pl.staffed && goodOptions.has(pl.type))
                 .map((pl) => pl.type)
                 .reduce(
-                    (acc, pl) => {
+                    (acc, pl: Good) => {
                         acc[pl] ||= 0;
                         acc[pl]++;
                         return acc;
                     },
-                    {} as Record<string, number>
+                    {} as Record<Good, number>
                 );
             const capacity = p.board.buildings
                 .filter((b) => b.production)
                 .reduce(
                     (acc, b) => {
-                        acc[b.productionType as Good] ||= 0;
-                        acc[b.productionType as Good] += b.staff;
+                        acc[b.productionType] ||= 0;
+                        acc[b.productionType] += b.staff;
                         return acc;
                     },
                     {corn: 99} as Record<Good, number>
                 );
-            Object.keys(plants).forEach((pl) => {
+            Object.keys(plants).forEach((pl: Good) => {
                 const production = Math.min(
                     plants[pl],
-                    capacity[pl as Good],
-                    gs.goods[pl as Good]
+                    capacity[pl],
+                    gs.goods[pl]
                 );
-                p.goods[pl as Good] += production;
-                gs.goods[pl as Good] -= production;
+                p.goods[pl] += production;
+                gs.goods[pl] -= production;
             });
         }
-        gs.endRole();
         return;
     };
 

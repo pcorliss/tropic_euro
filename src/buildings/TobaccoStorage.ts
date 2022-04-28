@@ -1,9 +1,10 @@
+import { Good } from "../state/Good";
 import { Building } from "../state/Building";
 
 export class TobaccoStorage extends Building {
     name = "Tobacco Storage";
     production = true;
-    productionType = "tobacco";
+    productionType: Good = "tobacco";
     description = "";
     staffSpots = 3;
     size = 1;

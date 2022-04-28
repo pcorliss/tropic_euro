@@ -1,9 +1,10 @@
 import { Building } from "../state/Building";
+import { Good } from "../state/Good";
 
 export class SmallIndigoPlant extends Building {
     name = "Small Indigo Plant";
     production = true;
-    productionType = "indigo";
+    productionType: Good = "indigo";
     description = "";
     staffSpots = 1;
     size = 1;
