@@ -170,9 +170,8 @@ describe("Captain", () => {
             });
         });
 
-        xit("spoil phase", () => {
-            expect(true).toBeFalsy();
-        });
+        // describe("spoil phase", () => {
+        // });
 
         describe("role end",() => {
             it("end role happens when no more actions available for all players", () => {
