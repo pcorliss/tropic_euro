@@ -8,6 +8,15 @@ export class Role {
     phase: string;
     roleActions: Action[] = [];
     doubloons = 0;
+    skipPlayersWithNoActions = false;
+
+    finished(gs: GameState): boolean { 
+        let lastPlayerIdx = gs.currentPlayerIdx - 1 + gs.players.length;
+        lastPlayerIdx %= gs.players.length;
+
+        return gs.currentTurnPlayerIdx == lastPlayerIdx;
+    }
+
     availableActions(gs?: GameState, player?: Player): Action[] {return [];}
     endRole(gs?: GameState, player?: Player): void {return;}
 

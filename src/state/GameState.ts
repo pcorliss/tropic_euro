@@ -145,11 +145,11 @@ export class GameState {
 
     initTradeShips(): void {
         if (this.players.length == 3) {
-            this.ships = [ new Ship(4), new Ship(5), new Ship(6) ];
+            this.ships = [ new Ship(4, "Sml"), new Ship(5, "Med"), new Ship(6, "Big") ];
         } else if (this.players.length == 4) {
-            this.ships = [ new Ship(5), new Ship(6), new Ship(7) ];
+            this.ships = [ new Ship(5, "Sml"), new Ship(6, "Med"), new Ship(7, "Big") ];
         } else {
-            this.ships = [ new Ship(6), new Ship(7), new Ship(8) ];
+            this.ships = [ new Ship(6, "Sml"), new Ship(7, "Med"), new Ship(8, "Big") ];
         }
     }
 
@@ -263,7 +263,6 @@ export class GameState {
         if(this.currentRole === null) {
             return this.availableRoles.map((role) => role.chooseAction);
         }
-        // return this.currentRole.getAvailableActions(player);
         return [];
     }
 
@@ -274,15 +273,25 @@ export class GameState {
     }
 
     advancePlayer(): void {
-        let lastPlayerIdx = this.currentPlayerIdx - 1 + this.players.length;
-        lastPlayerIdx %= this.players.length;
-        if (this.currentTurnPlayerIdx != lastPlayerIdx) {
-            this.currentTurnPlayerIdx++;
-            this.currentTurnPlayerIdx %= this.players.length;
+        if (this.currentRole.finished(this)) {
+            this.endRole();
             return;
         }
 
-        this.endRole();
+        this.currentTurnPlayerIdx++;
+        this.currentTurnPlayerIdx %= this.players.length;
+
+        if (
+            this.currentRole.skipPlayersWithNoActions &&
+            this.currentRole.availableActions(
+                this,
+                this.currentTurnPlayer()
+            ).length == 0
+        ) {
+            this.advancePlayer();
+        }
+
+        return;
     }
 
     endRole(): void {
@@ -302,5 +311,12 @@ export class GameState {
         this.currentPlayerIdx = this.governorIdx;
         this.availableRoles.forEach((r) => r.doubloons++);
         return;
+    }
+
+    takeVPs(request: number, player: Player): number {
+        const grant = Math.min(request, this.victoryPoints);
+        this.victoryPoints -= grant;
+        player.victoryPoints += grant;
+        return grant;
     }
 }
