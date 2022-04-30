@@ -12,7 +12,6 @@ export class Captain extends Role {
     skipPlayersWithNoActions = true;
 
     finished(gs: GameState): boolean {
-        // currentPlayerTurn blocks the available acctions stuff
         return gs.players.every((p) => 
             this.possibleShipments(gs, p).length == 0
         );
@@ -83,33 +82,10 @@ export class Captain extends Role {
     }
 
     availableActions(gs?: GameState, player?: Player): Action[] {
-        const actions: Action[] = [];
-
         if (gs.currentTurnPlayer() != player) { return []; }
 
-        const emptyShips = gs.ships.filter((s) => s.empty());
-        const fullShipTypes = new Set<Good>(gs.ships
-            .filter((s) => s.full())
-            .map((s) => s.goodType)
+        return this.possibleShipments(gs, player).map(([g, s]) => 
+            this.shippingAction(g, s)
         );
-        const goodsShips = new Map(
-            gs.ships
-                .filter((s) => !s.empty() && !s.full())
-                .map(s => [s.goodType, s])
-        );
-
-        Object.entries(player.goods).forEach(([g, q]) => {
-            if (q <= 0) { return; }
-            if (fullShipTypes.has(g as Good)) { return; }
-            if (goodsShips.has(g as Good)) {
-                const s = goodsShips.get(g as Good);
-                actions.push(this.shippingAction(g as Good, s));
-                return;
-            }
-            emptyShips.forEach((s) => {
-                actions.push(this.shippingAction(g as Good, s));
-            });
-        });
-        return actions;
     }
 }
