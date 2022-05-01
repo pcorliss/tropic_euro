@@ -27,13 +27,14 @@ describe("Captain", () => {
             expect(actions).toHaveLength(0);
         });
 
-        it("returns nothing if the ships are full", () => {
+        it("returns no shipping options if the ships are full", () => {
             gs.ships.forEach((s) => {
                 s.goods = s.spots;
                 s.goodType = "corn" as Good;
             });
             player.goods["corn"] = 1;
-            const actions = role.availableActions(gs, player);
+            const actions = role.availableActions(gs, player)
+                .filter((a) => a.key.startsWith("ship"));
             expect(actions).toHaveLength(0);
         });
 
@@ -72,7 +73,8 @@ describe("Captain", () => {
             player.goods["corn"] = 1;
             gs.ships[2].goodType = "corn";
             gs.ships[2].goods = gs.ships[2].spots;
-            const actions = role.availableActions(gs, player);
+            const actions = role.availableActions(gs, player)
+                .filter((a) => a.key.startsWith("ship"));
             expect(actions).toHaveLength(0);
         });
 
@@ -170,11 +172,55 @@ describe("Captain", () => {
             });
         });
 
-        // describe("spoil phase", () => {
-        // });
+        describe("spoil phase", () => {
+            it("allows the player to keep one good", () => {
+                player.goods["corn"] = 12;
+
+                let actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "shipCornBig");
+                a.apply(gs, player);
+
+                actions = role.availableActions(gs, player);
+                
+                expect(actions).toHaveLength(1);
+                expect(actions[0].key).toBe("keepCorn");
+
+                actions[0].apply(gs, player);
+
+                expect(player.goods["corn"]).toBe(1);
+                expect(gs.currentRole).toBeNull();
+            });
+
+            it("removes all other goods", () => {
+                const expectedCorn = gs.goods["corn"] + 11;
+                const expectedSugar = gs.goods["sugar"] + 12 + gs.ships[0].spots;
+                player.goods["corn"] = 12;
+                player.goods["sugar"] = 12;
+                gs.ships[0].goodType = "sugar";
+                gs.ships[0].goods = gs.ships[0].spots;
+
+                let actions = role.availableActions(gs, player);
+                let a = actions.find((a) => a.key == "shipCornBig");
+                a.apply(gs, player);
+
+                actions = role.availableActions(gs, player);
+                a = actions.find((a) => a.key == "keepCorn");
+                
+                expect(actions).toHaveLength(2);
+                expect(a.key).toBe("keepCorn");
+
+                a.apply(gs, player);
+
+                expect(player.goods["corn"]).toBe(1);
+                expect(player.goods["sugar"]).toBe(0);
+                expect(gs.goods["corn"]).toBe(expectedCorn);
+                expect(gs.goods["sugar"]).toBe(expectedSugar);
+                expect(gs.currentRole).toBeNull();
+            });
+        });
 
         describe("role end",() => {
-            it("end role happens when no more actions available for all players", () => {
+            it("happens when no more actions available for all players", () => {
                 player.goods["corn"] = 1;
                 player.goods["indigo"] = 1;
                 let actions = role.availableActions(gs, player);
@@ -191,7 +237,7 @@ describe("Captain", () => {
                 expect(gs.currentRole).toBeNull();
             });
 
-            it("end role resets the captain bonus flag", () => {
+            it("resets the captain bonus flag", () => {
                 player.goods["corn"] = 1;
                 gs.players[2].goods["corn"] = 2;
                 let actions = role.availableActions(gs, player);
@@ -209,7 +255,7 @@ describe("Captain", () => {
             it("clears the ships at the end of the round if they're full", () => {
                 gs.goods["corn"] = 0;
                 gs.currentTurnPlayerIdx = 2;
-                gs.players[2].goods["corn"] = 2;
+                gs.players[2].goods["corn"] = 1;
                 gs.ships[2].goods = 5;
                 gs.ships[2].goodType = "corn";
                 const actions = role.availableActions(gs, gs.players[2]);

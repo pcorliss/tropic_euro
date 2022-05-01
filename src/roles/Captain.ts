@@ -11,10 +11,24 @@ export class Captain extends Role {
     bonus = false;
     skipPlayersWithNoActions = true;
 
-    finished(gs: GameState): boolean {
+    spoilPhase(gs: GameState): boolean {
+        return this.finishedShipping(gs);
+    }
+
+    finishedShipping(gs: GameState): boolean {
         return gs.players.every((p) => 
             this.possibleShipments(gs, p).length == 0
         );
+    }
+
+    finishedSpoiling(gs: GameState): boolean {
+        return gs.players.every((p) => 
+            this.possibleSpoils(gs, p).length == 0
+        );
+    }
+
+    finished(gs: GameState): boolean {
+        return this.finishedShipping(gs) && this.finishedSpoiling(gs);
     }
 
     endRole(gs?: GameState, player?: Player): void {
@@ -51,6 +65,32 @@ export class Captain extends Role {
         );
     }
 
+    spoilAction(good: Good): Action {
+        return new Action(
+            `keep${good[0].toUpperCase()}${good.slice(1)}`,
+            (gs: GameState, player: Player): void => {
+                Object.keys(player.goods).forEach((g) => {
+                    gs.goods[g as Good] += player.goods[g as Good];
+                    player.goods[g as Good] = 0;
+                });
+                player.goods[good]++;
+                gs.goods[good]--;
+                gs.advancePlayer();
+                return;
+            },
+        );
+    }
+
+    possibleSpoils(gs: GameState, player: Player): Good[] {
+        const goodsSum = Object.values(player.goods).reduce((acc, n) => acc += n);
+        if (goodsSum <= 1) {
+            return [];
+        }
+        return Object.entries(player.goods)
+            .filter(([g, n]) => n > 0)
+            .map(([g, n]) => g as Good);
+    }
+
     possibleShipments(gs: GameState, player: Player): [Good, Ship][] {
         const emptyShips = gs.ships.filter((s) => s.empty());
         const fullShipTypes = new Set<Good>(gs.ships
@@ -84,8 +124,16 @@ export class Captain extends Role {
     availableActions(gs?: GameState, player?: Player): Action[] {
         if (gs.currentTurnPlayer() != player) { return []; }
 
-        return this.possibleShipments(gs, player).map(([g, s]) => 
+        const actions = this.possibleShipments(gs, player).map(([g, s]) => 
             this.shippingAction(g, s)
         );
+
+        // TODO is the spoil phase check here necessary?
+        if (this.spoilPhase(gs) && actions.length == 0) {
+            return this.possibleSpoils(gs, player).map((g) => 
+                this.spoilAction(g)
+            );
+        }
+        return actions;
     }
 }
