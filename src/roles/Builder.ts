@@ -7,6 +7,7 @@ export class Builder extends Role {
     name = "Builder";
     description = "";
     phase = "building";
+    skipPlayersWithNoActions = true;
 
     buildingCost(building: Building, player: Player, gs: GameState): number {
         const quarryCount = player.board.plantations
@@ -41,11 +42,13 @@ export class Builder extends Role {
                     new Action(
                         `buy${b.name.replace(/\s+/g, "")}`,
                         (gs: GameState, player: Player): void => {
-                            gs.advancePlayer();
-                            // Relies on poor equality checking in JS
+                            // Relies on poor equality checking in JS for
+                            // identical buildings with different objects
                             gs.buildings = gs.buildings.filter((gsB) => b != gsB);
                             player.board.buildings.push(b);
                             player.doubloons -= this.buildingCost(b, player, gs);
+
+                            gs.advancePlayer();
                             return;
                         },
                     )

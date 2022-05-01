@@ -136,6 +136,7 @@ describe("Builder", () => {
                 player.doubloons = 9;
                 gs.buildings = [new Fortress];
                 const actions = role.availableActions(gs, player);
+                
                 const a = actions.find((a) => a.key == "buyFortress");
                 a.apply(gs, player);
                 expect(player.doubloons).toBe(0);
@@ -178,6 +179,18 @@ describe("Builder", () => {
                 a.apply(gs, gs.players[2]);
                 expect(gs.currentPlayerIdx).toBe(1);
                 expect(gs.currentRole).toBeNull();
+            });
+
+            it("skips players if they have no actions", () => {
+                gs.players[0].doubloons = 1;
+                gs.players[1].doubloons = 0;
+                gs.players[2].doubloons = 1;
+
+                const actions = role.availableActions(gs, player);
+                const a = actions[0];
+                a.apply(gs, player);
+
+                expect(gs.currentTurnPlayerIdx).toBe(2);
             });
         });
     });
