@@ -68,20 +68,36 @@ describe("Mayor", () => {
             expect(gs.colonists).toBe(0);
         });
 
+        it("auto distributes colonists", () => {
+            player.board.buildings.push(new SmallIndigoPlant);
+            role.chooseAction.apply(gs, player);
+            expect(player.board.buildings[0].staff).toBe(1);
+            expect(player.board.plantations[0].staffed).toBeTruthy();
+        });
+
         // triggers game end if supply runs out
     });
 
     describe("availableActions", () => {
-        // it("returns a single action to rearrange the player board", () => {
-        //     const actions = role.availableActions(gs, player);
-        //     const actionKeys = actions.map((a) => a.key);
-        //     expect(actionKeys).toContain("rearrangeBoard");
-        // });
+        it("returns a single action to rearrange the player board", () => {
+            player.board.buildings.push(new LargeIndigoPlant);
+            role.chooseAction.apply(gs, player);
+            const actions = role.availableActions(gs, player);
+            const actionKeys = actions.map((a) => a.key);
+            expect(actionKeys).toContain("rearrangeBoard");
+        });
+
+        xit("returns nothing if there are no placement option", () => {
+            const actions = role.availableActions(gs, player);
+            expect(actions).toHaveLength(0);
+        });
         
-        // autofills the player board if there are no empty spots
         describe("returns an action that", () => {
-            // allows rearranging the player board
-            // does not allow san juan unless all circles are filled
+            // skips the player if only one placement option
+            // allows rearranging the player board - via json blob
+            // validates total colonists
+            // validates building and plantations are the same
+            // validates san juan count only if no empty spaces
          });
     });
 

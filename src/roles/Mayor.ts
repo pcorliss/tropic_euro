@@ -23,15 +23,15 @@ export class Mayor extends Role {
                 p.board.sanJuanColonists++;
             }
             playerIdx = (playerIdx + 1) % gs.players.length;
+
+            p.board.autoDistributeColonists();
         }
 
         // Refill the ship
         const openSpots = gs.players.reduce((sum, p) => sum += p.board.openBuildingSpaces(), 0);
-
         const refill = Math.max(openSpots, gs.players.length);
         gs.colonyShip = gs.takeColonists(refill);
 
-        gs.endRole();
         return;
     };
 
@@ -40,5 +40,23 @@ export class Mayor extends Role {
             `choose${this.name}`,
             this.chooseMayor,
         );
+    }
+    availableActions(gs?: GameState, player?: Player): Action[] {
+        const actions: Action[] = [];
+
+        // if (player.board.totalColonists()) {
+        //     return actions;
+        // }
+        actions.push(
+            new Action(
+                "rearrangeBoard",
+                (gs: GameState, player: Player): void => {
+                    // gs.advancePlayer();
+                    return;
+                },
+            )
+        );
+
+        return actions;
     }
 }

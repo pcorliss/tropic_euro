@@ -16,7 +16,18 @@ export class Board {
         return this.buildings.reduce((count, b) => count += (b.staffSpots - b.staff), 0);
     }
 
-    // autoDistributeColonists(): void {
-    //     return;
-    // }
+    totalSpots(): number {
+        const buildingSpots = this.buildings.reduce((count, b) => count += b.staffSpots, 0);
+        const plantationSpots = this.plantations.length;
+        return buildingSpots + plantationSpots;
+    }
+
+    autoDistributeColonists(): void {
+        if (this.totalColonists() < this.totalSpots()) { return; }
+
+        this.sanJuanColonists = this.totalColonists() - this.totalSpots();
+        this.buildings.forEach((b) => b.staff = b.staffSpots);
+        this.plantations.forEach((p) => p.staffed = true);
+        return;
+    }
 }

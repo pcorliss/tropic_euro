@@ -71,5 +71,47 @@ describe("Board", () => {
         });
     });
 
-    // describe("autoDistributeColonists", () => {});
+    describe("totalSpots", () => {
+        it("counts spots in plantations", () => {
+            b.plantations.push(new Plantation("Indigo"));
+            b.plantations.push(new Plantation("Indigo"));
+            b.plantations.push(new Plantation("Indigo"));
+            expect(b.totalSpots()).toBe(3);
+        });
+
+        it("counts spots on buildings", () => {
+            b.buildings.push(new LargeIndigoPlant);
+            b.buildings.push(new SmallIndigoPlant);
+            expect(b.totalSpots()).toBe(4);
+        });
+    });
+
+    describe("autoDistributeColonists", () => {
+        it("does nothing if there would be open spots", () => {
+            b.sanJuanColonists = 2;
+            b.buildings.push(new LargeIndigoPlant);
+            b.autoDistributeColonists();
+            expect(b.sanJuanColonists).toBe(2);
+        });
+
+        it("redistributes to all open spots", () => {
+            b.sanJuanColonists = 4;
+            b.plantations.push(new Plantation("indigo"));
+            b.buildings.push(new LargeIndigoPlant);
+            b.autoDistributeColonists();
+            expect(b.sanJuanColonists).toBe(0);
+            expect(b.plantations[0].staffed).toBeTruthy();
+            expect(b.buildings[0].staff).toBe(3);
+        });
+
+        it("drops excess colonists in San Juan", () => {
+            b.sanJuanColonists = 6;
+            b.plantations.push(new Plantation("indigo"));
+            b.buildings.push(new LargeIndigoPlant);
+            b.autoDistributeColonists();
+            expect(b.sanJuanColonists).toBe(2);
+            expect(b.plantations[0].staffed).toBeTruthy();
+            expect(b.buildings[0].staff).toBe(3);
+        });
+    });
 });
