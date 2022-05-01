@@ -13,10 +13,10 @@ export class Board {
     }
 
     openBuildingSpaces(): number {
-        return 0;
+        return this.buildings.reduce((count, b) => count += (b.staffSpots - b.staff), 0);
     }
 
-    autoDistributeColonists(): void {
-        return;
-    }
+    // autoDistributeColonists(): void {
+    //     return;
+    // }
 }

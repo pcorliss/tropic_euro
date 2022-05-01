@@ -48,4 +48,28 @@ describe("Board", () => {
             expect(b.totalColonists()).toBe(3);
         });
     });
+
+    describe("openBuildingSpaces", () => {
+        it("returns 0 for no buildings", () => {
+            expect(b.openBuildingSpaces()).toBe(0);
+        });
+
+        it("returns 0 for full buildings", () => {
+            b.buildings.push(new LargeIndigoPlant);
+            b.buildings.push(new SmallIndigoPlant);
+            b.buildings[0].staff = 3;
+            b.buildings[1].staff = 1;
+            expect(b.openBuildingSpaces()).toBe(0);
+        });
+
+        it("returns open spaces", () => {
+            b.buildings.push(new LargeIndigoPlant);
+            b.buildings.push(new SmallIndigoPlant);
+            b.buildings[0].staff = 1;
+            b.buildings[1].staff = 0;
+            expect(b.openBuildingSpaces()).toBe(3);
+        });
+    });
+
+    // describe("autoDistributeColonists", () => {});
 });
