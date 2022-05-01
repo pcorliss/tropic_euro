@@ -319,4 +319,10 @@ export class GameState {
         player.victoryPoints += grant;
         return grant;
     }
+
+    takeColonists(request: number): number {
+        const grant = Math.min(request, this.colonists);
+        this.colonists -= grant;
+        return grant;
+    }
 }

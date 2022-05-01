@@ -328,4 +328,18 @@ describe("GameState", () => {
             expect(gs.players[0].victoryPoints).toBe(4);
         });
     });
+
+    describe("takeColonists", () => {
+        it("takes from supply", () => {
+            const expected = gs.colonists - 1;
+            expect(gs.takeColonists(1)).toBe(1);
+            expect(gs.colonists).toBe(expected);
+        });
+
+        it("doesn't take more than in supply", () => {
+            gs.colonists = 3;
+            expect(gs.takeColonists(5)).toBe(3);
+            expect(gs.colonists).toBe(0);
+        });
+    });
 });
