@@ -87,17 +87,19 @@ describe("Mayor", () => {
             expect(actionKeys).toContain("rearrangeBoard");
         });
 
-        xit("returns nothing if there are no placement option", () => {
+        it("returns nothing if there are no placement option", () => {
+            player.board.plantations[0].staffed = true;
             const actions = role.availableActions(gs, player);
             expect(actions).toHaveLength(0);
         });
         
         describe("returns an action that", () => {
-            // skips the player if only one placement option
             // allows rearranging the player board - via json blob
             // validates total colonists
             // validates building and plantations are the same
             // validates san juan count only if no empty spaces
+
+            // skips the player if only one placement option
          });
     });
 

@@ -44,9 +44,8 @@ export class Mayor extends Role {
     availableActions(gs?: GameState, player?: Player): Action[] {
         const actions: Action[] = [];
 
-        // if (player.board.totalColonists()) {
-        //     return actions;
-        // }
+        if (player.board.totalColonists() >= player.board.totalSpots()) { return []; }
+
         actions.push(
             new Action(
                 "rearrangeBoard",
