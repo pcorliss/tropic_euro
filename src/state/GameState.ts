@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { Player } from "./Player";
 import { Building } from "./Building";
 import { Plantation } from "./Plantation";

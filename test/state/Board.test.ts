@@ -3,6 +3,9 @@ import { SmallIndigoPlant } from "../../src/buildings/SmallIndigoPlant";
 import { Board } from "../../src/state/Board";
 import { Plantation } from "../../src/state/Plantation";
 
+import { plainToClass } from "class-transformer";
+
+
 describe("Board", () => {
     let b: Board = null;
 
@@ -112,6 +115,28 @@ describe("Board", () => {
             expect(b.sanJuanColonists).toBe(2);
             expect(b.plantations[0].staffed).toBeTruthy();
             expect(b.buildings[0].staff).toBe(3);
+        });
+    });
+
+    describe("reconstituting from a JSON object", () => {
+        it("preserves static values", () => {
+            b.sanJuanColonists = 99;
+            b.plantations.push(new Plantation("indigo"));
+            b.buildings.push(new LargeIndigoPlant);
+
+            const reconst = plainToClass(Board, JSON.parse(JSON.stringify(b)));
+
+            expect(reconst.sanJuanColonists).toBe(99);
+            expect(reconst.buildings[0].name).toBe("Large Indigo Plant");
+            expect(reconst.plantations[0].type).toBe("indigo");
+        });
+
+        it("allows function calls", () => {
+            b.sanJuanColonists = 99;
+
+            const reconst = plainToClass(Board, JSON.parse(JSON.stringify(b)));
+
+            expect(reconst.totalColonists()).toBe(99);
         });
     });
 });

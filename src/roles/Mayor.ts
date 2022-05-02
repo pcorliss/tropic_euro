@@ -2,6 +2,10 @@ import { Role } from "../state/Role";
 import { Action } from "../state/Action";
 import { GameState } from "../state/GameState";
 import { Player } from "../state/Player";
+import { Board } from "../state/Board";
+
+import { plainToClass } from "class-transformer";
+
 export class Mayor extends Role {
     name = "Mayor";
     description = "";
@@ -44,15 +48,29 @@ export class Mayor extends Role {
     availableActions(gs?: GameState, player?: Player): Action[] {
         const actions: Action[] = [];
 
+
         if (player.board.totalColonists() >= player.board.totalSpots()) { return []; }
 
         actions.push(
             new Action(
                 "rearrangeBoard",
-                (gs: GameState, player: Player): void => {
+                (gs: GameState, player: Player, blob: unknown): void => {
+                    const newBoard = blob as Board;
+                    player.board = newBoard;
                     // gs.advancePlayer();
                     return;
                 },
+                (gs: GameState, player: Player, blob: unknown): boolean => {
+                    // const newBoard = blob as Board;
+                    const newBoard = plainToClass(Board, blob);
+                    if (player.board.totalColonists() != newBoard.totalColonists()) {
+                        return false;
+                    }
+                    if (player.board.buildings.length != newBoard.buildings.length) {
+                        return false;
+                    }
+                    return true;
+                }
             )
         );
 
