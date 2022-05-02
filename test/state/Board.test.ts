@@ -4,6 +4,7 @@ import { Board } from "../../src/state/Board";
 import { Plantation } from "../../src/state/Plantation";
 
 import { plainToClass } from "class-transformer";
+import { Building } from "../../src/state/Building";
 
 
 describe("Board", () => {
@@ -137,6 +138,66 @@ describe("Board", () => {
             const reconst = plainToClass(Board, JSON.parse(JSON.stringify(b)));
 
             expect(reconst.totalColonists()).toBe(99);
+        });
+    });
+
+    describe("sameBuildings", () => {
+        it("returns true", () => {
+            expect(b.sameBuildings(b)).toBeTruthy();
+        });
+
+        it("returns false if the building length has changed", () => {
+            b.buildings.push(new SmallIndigoPlant);
+            const newB = new Board();
+            newB.buildings.push(new SmallIndigoPlant);
+            newB.buildings.push(new SmallIndigoPlant);
+            expect(b.sameBuildings(newB)).toBeFalsy();
+        });
+        
+        it("returns false if the building changed", () => {
+            b.buildings.push(new SmallIndigoPlant);
+            const newB = new Board();
+            newB.buildings.push(new LargeIndigoPlant);
+            expect(b.sameBuildings(newB)).toBeFalsy();
+        });
+
+        it("can't do something fishy with building duping", () => {
+            b.buildings.push(new SmallIndigoPlant);
+            b.buildings.push(new LargeIndigoPlant);
+            const newB = new Board();
+            newB.buildings.push(new SmallIndigoPlant);
+            newB.buildings.push(new SmallIndigoPlant);
+            expect(b.sameBuildings(newB)).toBeFalsy();
+        });
+    });
+
+    describe("samePlantations", () => {
+        it("returns true", () => {
+            expect(b.samePlantations(b)).toBeTruthy();
+        });
+
+        it("returns false if the plantation length has changed", () => {
+            b.plantations.push(new Plantation("indigo"));
+            const newB = new Board();
+            newB.plantations.push(new Plantation("indigo"));
+            newB.plantations.push(new Plantation("indigo"));
+            expect(b.samePlantations(newB)).toBeFalsy();
+        });
+        
+        it("returns false if the plantation changed", () => {
+            b.plantations.push(new Plantation("indigo"));
+            const newB = new Board();
+            newB.plantations.push(new Plantation("sugar"));
+            expect(b.samePlantations(newB)).toBeFalsy();
+        });
+
+        it("can't do something fishy with plantation duping", () => {
+            b.plantations.push(new Plantation("indigo"));
+            b.plantations.push(new Plantation("sugar"));
+            const newB = new Board();
+            newB.plantations.push(new Plantation("indigo"));
+            newB.plantations.push(new Plantation("indigo"));
+            expect(b.samePlantations(newB)).toBeFalsy();
         });
     });
 });

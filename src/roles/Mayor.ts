@@ -61,15 +61,11 @@ export class Mayor extends Role {
                     return;
                 },
                 (gs: GameState, player: Player, blob: unknown): boolean => {
-                    // const newBoard = blob as Board;
                     const newBoard = plainToClass(Board, blob);
-                    if (player.board.totalColonists() != newBoard.totalColonists()) {
-                        return false;
-                    }
-                    if (player.board.buildings.length != newBoard.buildings.length) {
-                        return false;
-                    }
-                    return true;
+                    return player.board.totalColonists() == newBoard.totalColonists()
+                        && player.board.sameBuildings(newBoard)
+                        && player.board.samePlantations(newBoard)
+                        && (newBoard.sanJuanColonists == 0 || newBoard.openBuildingSpaces() == 0);
                 }
             )
         );

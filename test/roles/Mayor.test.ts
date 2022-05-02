@@ -144,12 +144,26 @@ describe("Mayor", () => {
                 expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
             });
 
-            xit("validates building and plantations are the same", () => {
+            it("validates buildings are the same", () => {
                 player.board.sanJuanColonists = 1;
                 player.board.buildings.push(new SmallIndigoPlant);
 
                 const board = new Board();
                 board.buildings.push(new LargeIndigoPlant);
+                board.buildings[0].staff = 1;
+                board.plantations = player.board.plantations;
+
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "rearrangeBoard");
+                expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
+            });
+
+            it("validates plantations are the same", () => {
+                player.board.sanJuanColonists = 1;
+                player.board.buildings.push(new SmallIndigoPlant);
+
+                const board = new Board();
+                board.buildings.push(new SmallIndigoPlant);
                 board.plantations.push(new Plantation("corn"));
                 board.plantations[0].staffed = true;
 
@@ -158,7 +172,19 @@ describe("Mayor", () => {
                 expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
             });
 
-            // validates san juan count only if no empty spaces
+            it("validates that san juan remains empty if there are empty spaces", () => {
+                player.board.sanJuanColonists = 1;
+                player.board.buildings.push(new SmallIndigoPlant);
+
+                const board = new Board();
+                board.sanJuanColonists = 1;
+                board.buildings.push(new SmallIndigoPlant);
+                board.plantations.push(new Plantation("indigo"));
+
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "rearrangeBoard");
+                expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
+            });
 
             // skips the player if only one placement option
          });
