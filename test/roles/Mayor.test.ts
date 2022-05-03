@@ -1,6 +1,5 @@
 import { GameState } from "../../src/state/GameState";
 import { Player } from "../../src/state/Player";
-import { Role } from "../../src/state/Role";
 import { Board } from "../../src/state/Board";
 import { Mayor} from "../../src/roles/Mayor";
 import { LargeIndigoPlant } from "../../src/buildings/LargeIndigoPlant";
@@ -9,16 +8,14 @@ import { Plantation } from "../../src/state/Plantation";
 
 describe("Mayor", () => {
     let gs: GameState = null;
-    let role: Role = null;
+    let role: Mayor  = null;
     let player: Player = null;
-    let board: Board = null;
 
     beforeEach(() => {
         gs = new GameState(["Alice", "Bob", "Carol"]);
-        role = gs.availableRoles.find((r) => r instanceof Mayor);
+        role = gs.availableRoles.find((r) => r instanceof Mayor) as Mayor;
         gs.currentRole = role;
         player = gs.players[0];
-        board = player.board;
     });
 
     describe("chooseThisRole", () => {
@@ -79,6 +76,14 @@ describe("Mayor", () => {
         // triggers game end if supply runs out
     });
 
+    describe("endRole", () => {
+        it("resets the completedPlayers", () => {
+            role.completedPlayers.push(0);
+            role.endRole();
+            expect(role.completedPlayers).toHaveLength(0);
+        });
+    });
+
     describe("availableActions", () => {
         it("returns a single action to rearrange the player board", () => {
             player.board.buildings.push(new LargeIndigoPlant);
@@ -93,7 +98,14 @@ describe("Mayor", () => {
             const actions = role.availableActions(gs, player);
             expect(actions).toHaveLength(0);
         });
-        
+
+        it("returns nothing if the player's board has already been rearranged", () => {
+            role.completedPlayers.push(0);
+
+            const actions = role.availableActions(gs, player);
+            expect(actions).toHaveLength(0);
+        });
+
         describe("returns an action that", () => {
             it("allows rearranging the player board via json blob", () => {
                 player.board.buildings.push(new LargeIndigoPlant);
@@ -114,7 +126,10 @@ describe("Mayor", () => {
                 expect(player.board.sanJuanColonists).toBe(0);
             });
 
-            it("validates rearranging the player board via json blob", () => {
+            it("ends the role if all players have gone", () => {
+                gs.currentRole = role;
+                role.completedPlayers.push(1, 2);
+
                 player.board.buildings.push(new LargeIndigoPlant);
                 player.board.sanJuanColonists = 2;
 
@@ -126,67 +141,108 @@ describe("Mayor", () => {
 
                 const actions = role.availableActions(gs, player);
                 const a = actions.find((a) => a.key == "rearrangeBoard");
-                expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeTruthy();
+                a.apply(gs, player, JSON.parse(JSON.stringify(board)));
+
+                expect(gs.currentRole).toBeNull();
+                expect(gs.currentPlayerIdx).toBe(1);
             });
 
-            it("validates total colonists", () => {
+            it("ends the role for skipped players", () => {
+                gs.currentRole = role;
+
+                gs.players[1].board.plantations[0].staffed = true;
+                gs.players[2].board.plantations[0].staffed = true;
+
                 player.board.buildings.push(new LargeIndigoPlant);
                 player.board.sanJuanColonists = 2;
 
                 const board = new Board();
                 board.buildings.push(new LargeIndigoPlant);
                 board.plantations.push(new Plantation("indigo"));
-                board.buildings[0].staff = 3;
-                board.plantations[0].staffed = true;
-
-                const actions = role.availableActions(gs, player);
-                const a = actions.find((a) => a.key == "rearrangeBoard");
-                expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
-            });
-
-            it("validates buildings are the same", () => {
-                player.board.sanJuanColonists = 1;
-                player.board.buildings.push(new SmallIndigoPlant);
-
-                const board = new Board();
-                board.buildings.push(new LargeIndigoPlant);
                 board.buildings[0].staff = 1;
-                board.plantations = player.board.plantations;
-
-                const actions = role.availableActions(gs, player);
-                const a = actions.find((a) => a.key == "rearrangeBoard");
-                expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
-            });
-
-            it("validates plantations are the same", () => {
-                player.board.sanJuanColonists = 1;
-                player.board.buildings.push(new SmallIndigoPlant);
-
-                const board = new Board();
-                board.buildings.push(new SmallIndigoPlant);
-                board.plantations.push(new Plantation("corn"));
                 board.plantations[0].staffed = true;
 
                 const actions = role.availableActions(gs, player);
                 const a = actions.find((a) => a.key == "rearrangeBoard");
-                expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
+                a.apply(gs, player, JSON.parse(JSON.stringify(board)));
+
+                expect(gs.currentRole).toBeNull();
+                expect(gs.currentPlayerIdx).toBe(1);
             });
 
-            it("validates that san juan remains empty if there are empty spaces", () => {
-                player.board.sanJuanColonists = 1;
-                player.board.buildings.push(new SmallIndigoPlant);
+            describe("validatios", () => {
+                it("validates rearranging the player board via json blob", () => {
+                    player.board.buildings.push(new LargeIndigoPlant);
+                    player.board.sanJuanColonists = 2;
 
-                const board = new Board();
-                board.sanJuanColonists = 1;
-                board.buildings.push(new SmallIndigoPlant);
-                board.plantations.push(new Plantation("indigo"));
+                    const board = new Board();
+                    board.buildings.push(new LargeIndigoPlant);
+                    board.plantations.push(new Plantation("indigo"));
+                    board.buildings[0].staff = 1;
+                    board.plantations[0].staffed = true;
 
-                const actions = role.availableActions(gs, player);
-                const a = actions.find((a) => a.key == "rearrangeBoard");
-                expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
+                    const actions = role.availableActions(gs, player);
+                    const a = actions.find((a) => a.key == "rearrangeBoard");
+                    expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeTruthy();
+                });
+
+                it("validates total colonists", () => {
+                    player.board.buildings.push(new LargeIndigoPlant);
+                    player.board.sanJuanColonists = 2;
+
+                    const board = new Board();
+                    board.buildings.push(new LargeIndigoPlant);
+                    board.plantations.push(new Plantation("indigo"));
+                    board.buildings[0].staff = 3;
+                    board.plantations[0].staffed = true;
+
+                    const actions = role.availableActions(gs, player);
+                    const a = actions.find((a) => a.key == "rearrangeBoard");
+                    expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
+                });
+
+                it("validates buildings are the same", () => {
+                    player.board.sanJuanColonists = 1;
+                    player.board.buildings.push(new SmallIndigoPlant);
+
+                    const board = new Board();
+                    board.buildings.push(new LargeIndigoPlant);
+                    board.buildings[0].staff = 1;
+                    board.plantations = player.board.plantations;
+
+                    const actions = role.availableActions(gs, player);
+                    const a = actions.find((a) => a.key == "rearrangeBoard");
+                    expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
+                });
+
+                it("validates plantations are the same", () => {
+                    player.board.sanJuanColonists = 1;
+                    player.board.buildings.push(new SmallIndigoPlant);
+
+                    const board = new Board();
+                    board.buildings.push(new SmallIndigoPlant);
+                    board.plantations.push(new Plantation("corn"));
+                    board.plantations[0].staffed = true;
+
+                    const actions = role.availableActions(gs, player);
+                    const a = actions.find((a) => a.key == "rearrangeBoard");
+                    expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
+                });
+
+                it("validates that san juan remains empty if there are empty spaces", () => {
+                    player.board.sanJuanColonists = 1;
+                    player.board.buildings.push(new SmallIndigoPlant);
+
+                    const board = new Board();
+                    board.sanJuanColonists = 1;
+                    board.buildings.push(new SmallIndigoPlant);
+                    board.plantations.push(new Plantation("indigo"));
+
+                    const actions = role.availableActions(gs, player);
+                    const a = actions.find((a) => a.key == "rearrangeBoard");
+                    expect(a.valid(gs, player, JSON.parse(JSON.stringify(board)))).toBeFalsy();
+                });
             });
-
-            // skips the player if only one placement option
          });
     });
 

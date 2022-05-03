@@ -10,6 +10,7 @@ export class Mayor extends Role {
     name = "Mayor";
     description = "";
     phase = "mayoring";
+    completedPlayers: number[] = [];
 
     chooseMayor = (gs: GameState, player: Player) => {
         this.chooseThisRole(gs, player);
@@ -48,16 +49,22 @@ export class Mayor extends Role {
     availableActions(gs?: GameState, player?: Player): Action[] {
         const actions: Action[] = [];
 
-
         if (player.board.totalColonists() >= player.board.totalSpots()) { return []; }
+        const pIdx = gs.players.indexOf(player);
+        if (this.completedPlayers.indexOf(pIdx) >= 0) { return []; }
 
         actions.push(
             new Action(
                 "rearrangeBoard",
                 (gs: GameState, player: Player, blob: unknown): void => {
-                    const newBoard = blob as Board;
+                    const newBoard = plainToClass(Board, blob);
                     player.board = newBoard;
-                    // gs.advancePlayer();
+              
+                    this.completedPlayers.push(pIdx);
+
+                    if (this.finished(gs)) {
+                        gs.endRole();
+                    }
                     return;
                 },
                 (gs: GameState, player: Player, blob: unknown): boolean => {
@@ -71,5 +78,14 @@ export class Mayor extends Role {
         );
 
         return actions;
+    }
+
+    finished(gs: GameState): boolean {
+        return gs.players.every((p) => this.availableActions(gs, p).length == 0);
+    }
+
+    endRole(gs?: GameState, player?: Player): void {
+        this.completedPlayers = [];
+        return;
     }
 }
