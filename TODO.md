@@ -1,4 +1,3 @@
-* Ensure bonuses are applied for Trader
 * Game flow
 * End Game check
 * Captain Buildings

@@ -129,17 +129,34 @@ describe("Trader", () => {
                 "coffee": 4,
             };
 
-            for(const [good, value] of Object.entries(goodValues)) {
-                it(`adds ${value} doubloons for trading ${good}`, () => {
-                    player.goods[<Good>good] = 1;
-                    const actions = role.availableActions(gs, player);
-                    const actionKey = `trade${good[0].toUpperCase()}${good.slice(1)}`;
-                    const a = actions.find((a) => a.key == actionKey);
-                    const expected = player.doubloons + value;
-                    a.apply(gs, player);
-                    expect(player.doubloons).toBe(expected);
+            it("grants a bonus for the trader role", () => {
+                player.goods["corn"] = 1;
+                const actions = role.availableActions(gs, player);
+                const actionKey = "tradeCorn";
+                const a = actions.find((a) => a.key == actionKey);
+                const expected = player.doubloons + 1;
+                a.apply(gs, player);
+                expect(player.doubloons).toBe(expected);
+            });
+
+            describe("good values", () => {
+                beforeEach(() => {
+                    player = gs.players[1];
+                    gs.currentTurnPlayerIdx = 1;
                 });
-            }
+
+                for(const [good, value] of Object.entries(goodValues)) {
+                    it(`adds ${value} doubloons for trading ${good}`, () => {
+                        player.goods[<Good>good] = 1;
+                        const actions = role.availableActions(gs, player);
+                        const actionKey = `trade${good[0].toUpperCase()}${good.slice(1)}`;
+                        const a = actions.find((a) => a.key == actionKey);
+                        const expected = player.doubloons + value;
+                        a.apply(gs, player);
+                        expect(player.doubloons).toBe(expected);
+                    });
+                }
+            });
         });
     });
 });

@@ -62,6 +62,9 @@ export class Trader extends Role {
                         gs.tradingHouse.push(g);
                         player.goods[g]--;
                         player.doubloons += Trader.goodValues[g];
+                        if (player == gs.currentPlayer()) {
+                            player.doubloons++;
+                        }
                         gs.advancePlayer();
                         return;
                     }
