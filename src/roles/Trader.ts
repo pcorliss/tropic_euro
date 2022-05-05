@@ -18,7 +18,12 @@ export class Trader extends Role {
     };
 
     endRole(gs?: GameState, player?: Player): void {
-        if (gs.tradingHouse.length >= 4) { gs.tradingHouse = []; }
+        if (gs.tradingHouse.length >= 4) {
+            gs.tradingHouse.forEach((g) => {
+                gs.goods[g]++;
+            });
+            gs.tradingHouse = [];
+        }
         return;
     }
 
@@ -62,6 +67,11 @@ export class Trader extends Role {
                         gs.tradingHouse.push(g);
                         player.goods[g]--;
                         player.doubloons += Trader.goodValues[g];
+
+                        player.board.buildings
+                            .filter((pb) => pb.phase == "tradingBonus" && pb.staff > 0)
+                            .forEach((pb) => pb.tradingBonus(player));
+
                         if (player == gs.currentPlayer()) {
                             player.doubloons++;
                         }

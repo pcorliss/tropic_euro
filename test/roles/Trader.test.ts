@@ -3,6 +3,8 @@ import { Trader} from "../../src/roles/Trader";
 import { Role } from "../../src/state/Role";
 import { Player} from "../../src/state/Player";
 import { Good} from "../../src/state/Good";
+import { SmallMarket } from "../../src/buildings/SmallMarket";
+import { LargeMarket } from "../../src/buildings/LargeMarket";
 
 describe("Trader", () => {
     let gs: GameState = null;
@@ -102,12 +104,17 @@ describe("Trader", () => {
             it("clears the trading house at the end of the round if it's full", () => {
                 gs.currentTurnPlayerIdx = 2;
                 gs.tradingHouse = ["indigo", "sugar", "coffee"];
+                Object.keys(gs.goods).forEach((g) => gs.goods[g as Good] = 0);
                 player = gs.players[2];
                 player.goods["corn"] = 1;
                 const actions = role.availableActions(gs, player);
                 const a = actions.find((a) => a.key == "tradeCorn");
                 a.apply(gs, player);
                 expect(gs.tradingHouse).toHaveLength(0);
+                expect(gs.goods.indigo).toBe(1);
+                expect(gs.goods.corn).toBe(1);
+                expect(gs.goods.sugar).toBe(1);
+                expect(gs.goods.coffee).toBe(1);
             });
 
             it("doesn't clear the trading house at the end of the round if it's not full", () => {
@@ -135,6 +142,35 @@ describe("Trader", () => {
                 const actionKey = "tradeCorn";
                 const a = actions.find((a) => a.key == actionKey);
                 const expected = player.doubloons + 1;
+                a.apply(gs, player);
+                expect(player.doubloons).toBe(expected);
+            });
+
+            it("grants a bonus for the markets", () => {
+                player = gs.players[1];
+                gs.currentTurnPlayerIdx = 1;
+                player.board.buildings.push(new SmallMarket);
+                player.board.buildings.push(new LargeMarket);
+                player.board.buildings.forEach((b) => b.staff = 1);
+                player.goods["corn"] = 1;
+                const actions = role.availableActions(gs, player);
+                const actionKey = "tradeCorn";
+                const a = actions.find((a) => a.key == actionKey);
+                const expected = player.doubloons + 3;
+                a.apply(gs, player);
+                expect(player.doubloons).toBe(expected);
+            });
+
+            it("grants no bonus for unstaffed markets", () => {
+                player = gs.players[1];
+                gs.currentTurnPlayerIdx = 1;
+                player.board.buildings.push(new SmallMarket);
+                player.board.buildings.push(new LargeMarket);
+                player.goods["corn"] = 1;
+                const actions = role.availableActions(gs, player);
+                const actionKey = "tradeCorn";
+                const a = actions.find((a) => a.key == actionKey);
+                const expected = player.doubloons;
                 a.apply(gs, player);
                 expect(player.doubloons).toBe(expected);
             });

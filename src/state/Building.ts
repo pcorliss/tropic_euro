@@ -15,4 +15,5 @@ export class Building {
     phase: string;
 
     building(gs: GameState, p: Player, b: Building): void { return; }
+    tradingBonus(p: Player): void { return; }
 }

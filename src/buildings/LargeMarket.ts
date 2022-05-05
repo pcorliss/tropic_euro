@@ -1,3 +1,4 @@
+import { Player } from "../state/Player";
 import { Building } from "../state/Building";
 
 export class LargeMarket extends Building {
@@ -9,5 +10,10 @@ export class LargeMarket extends Building {
     staff = 0;
     points = 2;
     cost = 5;
-    phase = "trading";
+    phase = "tradingBonus";
+
+    tradingBonus(p: Player): void {
+        p.doubloons += 2;
+        return;
+    }
 }
