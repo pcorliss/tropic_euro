@@ -48,6 +48,10 @@ export class Builder extends Role {
                             player.board.buildings.push(b);
                             player.doubloons -= this.buildingCost(b, player, gs);
 
+                            player.board.buildings
+                                .filter((pb) => pb.phase == "building" && pb.staff > 0)
+                                .forEach((pb) => pb.building(gs, player, b));
+
                             gs.advancePlayer();
                             return;
                         },

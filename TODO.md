@@ -1,8 +1,7 @@
-* Game flow
+* Building effects on roles
 * End Game check
-* Captain Buildings
-    * it offers up a skip option for whaf owners
-    * it handles buildings like harbor
-* Other building effects on roles
+* End Game scoring
 * Captain (or other roles) could stall if there's no actions possible on first player.
 * Roles should have advance player skip players with no options
+* Game flow
+* gs.takeColonists may take from the ship if there are no more in supply

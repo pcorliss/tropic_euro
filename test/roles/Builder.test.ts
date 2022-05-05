@@ -8,6 +8,7 @@ import { SmallIndigoPlant } from "../../src/buildings/SmallIndigoPlant";
 import { SmallMarket } from "../../src/buildings/SmallMarket";
 import { Fortress } from "../../src/buildings/Fortress";
 import { Wharf } from "../../src/buildings/Wharf";
+import { University } from "../../src/buildings/University";
 
 describe("Builder", () => {
     let gs: GameState = null;
@@ -116,6 +117,27 @@ describe("Builder", () => {
         });
 
         describe("returns an action that", () => {
+            it("calls the building function on the university", () => {
+                player.board.buildings.push(new University);
+                player.board.buildings[0].staff = 1;
+
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "buySmallMarket");
+                a.apply(gs, player);
+
+                expect(player.board.buildings[1].staff).toBe(1);
+            });
+
+            it("skips building functions on an unstaffed university", () => {
+                player.board.buildings.push(new University);
+
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "buySmallMarket");
+                a.apply(gs, player);
+
+                expect(player.board.buildings[1].staff).toBe(0);
+            });
+
             it("removes the building from the building list", () => {
                 gs.buildings = [new SmallMarket, new SmallMarket];
                 const actions = role.availableActions(gs, player);
