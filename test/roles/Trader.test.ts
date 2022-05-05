@@ -5,6 +5,7 @@ import { Player} from "../../src/state/Player";
 import { Good} from "../../src/state/Good";
 import { SmallMarket } from "../../src/buildings/SmallMarket";
 import { LargeMarket } from "../../src/buildings/LargeMarket";
+import { Office } from "../../src/buildings/Office";
 
 describe("Trader", () => {
     let gs: GameState = null;
@@ -35,6 +36,18 @@ describe("Trader", () => {
             player.goods["corn"] = 1;
             const actions = role.availableActions(gs, player);
             expect(actions).toHaveLength(0);
+        });
+
+        it("allows trading of same good if the office is staffed", () => {
+            gs.tradingHouse = ["corn"];
+            player.goods["corn"] = 1;
+            player.board.buildings.push(new Office);
+            player.board.buildings[0].staff = 1;
+
+            const actions = role.availableActions(gs, player);
+            const actionKeys = actions.map((a) => a.key);
+            expect(actionKeys).toHaveLength(2);
+            expect(actionKeys).toContain("tradeCorn");
         });
 
         it("returns nothing if the house is already full", () => {

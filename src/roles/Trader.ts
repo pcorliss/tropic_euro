@@ -43,6 +43,12 @@ export class Trader extends Role {
 
         // Set Difference: playerGoods - tradingHouseGoods;
         const tradeableGoods = new Set([...playerGoods].filter(g => !tradingHouseGoods.has(g)));
+
+        player.board.buildings
+            .filter((pb) => pb.phase == "trading" && pb.staff > 0)
+            .flatMap((pb) => pb.trading(player))
+            .forEach((g) => tradeableGoods.add(g));
+
         if (tradeableGoods.size == 0) { return []; }
 
         const totalGoods = Object.entries(player.goods).reduce((acc, [g, n]) => acc += n, 0);
