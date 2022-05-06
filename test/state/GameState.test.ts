@@ -306,6 +306,11 @@ describe("GameState", () => {
             expect(gs.availableRoles[1].doubloons).toBe(1);
         });
 
+        it("advances the round counter", () => {
+            gs.endRound();
+            expect(gs.roundCounter).toBe(1);
+        });
+
         // it ("ends the game if the end game conditions have been met");
     });
 

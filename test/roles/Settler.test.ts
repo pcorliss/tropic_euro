@@ -3,6 +3,9 @@ import { Settler} from "../../src/roles/Settler";
 import { Role } from "../../src/state/Role";
 import { Player} from "../../src/state/Player";
 import { Plantation} from "../../src/state/Plantation";
+import { ConstructionHut } from "../../src/buildings/ConstructionHut";
+import { Hospice } from "../../src/buildings/Hospice";
+import { Hacienda } from "../../src/buildings/Hacienda";
 
 describe("Settler", () => {
     let gs: GameState = null;
@@ -29,6 +32,15 @@ describe("Settler", () => {
             const actionKeys = actions.map((a) => a.key);
             expect(actionKeys.length).toBeGreaterThan(0);
             expect(actionKeys).not.toContain("chooseQuarry");
+        });
+
+        it("returns quarry for a construction hut", () => {
+            gs.currentTurnPlayerIdx = 1;
+            gs.players[1].board.buildings.push(new ConstructionHut);
+            gs.players[1].board.buildings[0].staff = 1;
+            const actions = role.availableActions(gs, gs.players[1]);
+            const actionKeys = actions.map((a) => a.key);
+            expect(actionKeys).toContain("chooseQuarry");
         });
 
         it("returns one action for each good", () => {
@@ -74,12 +86,65 @@ describe("Settler", () => {
         });
 
         describe("returns an action that", () => {
+            it("hacienda allows choosing a random plantation as a first action", () => {
+                player.board.buildings.push(new Hacienda);
+                player.board.buildings[0].staff = 1;
+
+                const expected = gs.plantationSupply.length - 1;
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "chooseRandom");
+                a.apply(gs, player);
+
+                expect(player.board.plantations).toHaveLength(2);
+                expect(gs.plantationSupply).toHaveLength(expected);
+            });
+
+            it("hacienda can only be used once", () => {
+                player.board.buildings.push(new Hacienda);
+                player.board.buildings[0].staff = 1;
+
+                let actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "chooseRandom");
+                a.apply(gs, player);
+
+                expect(gs.currentTurnPlayerIdx).toBe(0);
+                actions = role.availableActions(gs, player);
+                const actionKeys = actions.map((a) => a.key);
+                expect(actionKeys).not.toContain("chooseRandom");
+            });
+
+            it("hacienda can be used the next round", () => {
+                player.board.buildings.push(new Hacienda);
+                player.board.buildings[0].staff = 1;
+
+                let actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "chooseRandom");
+                a.apply(gs, player);
+
+                gs.roundCounter++;
+
+                actions = role.availableActions(gs, player);
+                const actionKeys = actions.map((a) => a.key);
+                expect(actionKeys).toContain("chooseRandom");
+            });
+
             it("that transfers the plantation to the player's board", () => {
                 const actions = role.availableActions(gs, player);
                 const a = actions.find((a) => a.key == "chooseQuarry");
                 a.apply(gs, player);
                 expect(player.board.plantations).toHaveLength(2);
                 expect(player.board.plantations[1].type).toBe("quarry");
+            });
+
+            it("the hospice adds a colonist from supply to the new plantation", () => {
+                player.board.buildings.push(new Hospice);
+                player.board.buildings[0].staff = 1;
+                const expected = gs.colonists - 1;
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "chooseQuarry");
+                a.apply(gs, player);
+                expect(player.board.plantations[1].staffed).toBeTruthy();
+                expect(gs.colonists).toBe(expected);
             });
 
             it("that removes the quarry from the quarry list", () => {

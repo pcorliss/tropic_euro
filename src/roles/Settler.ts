@@ -31,6 +31,11 @@ export class Settler extends Role {
             plantationTypes.add("quarry");
         }
 
+        player.board.buildings
+            .filter((pb) => pb.phase == "plantationOptions" && pb.staff > 0)
+            .flatMap((pb) => pb.plantationOptions())
+            .forEach((pt) => plantationTypes.add(pt));
+
         actions.push(
             new Action(
                 "skip",
@@ -40,6 +45,12 @@ export class Settler extends Role {
                 },
             )
         );
+
+        player.board.buildings
+            .filter((pb) => pb.phase == "freePlantation" && pb.staff > 0)
+            .map((pb) => pb.freePlantation(gs, player))
+            .filter((a) => a != undefined)
+            .forEach((a) => actions.push(a));
 
         for (const p of plantationTypes) {
             actions.push(
@@ -67,6 +78,10 @@ export class Settler extends Role {
                         if (p == "quarry") {
                             gs.quarries--;
                         }
+
+                        player.board.buildings
+                            .filter((pb) => pb.phase == "plantationPlacement" && pb.staff > 0)
+                            .forEach((pb) => pb.plantationPlacement(gs, player.board.plantations.at(-1)));
 
                         gs.advancePlayer();
                         return;
