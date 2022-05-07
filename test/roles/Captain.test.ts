@@ -3,6 +3,7 @@ import { Captain} from "../../src/roles/Captain";
 import { Player} from "../../src/state/Player";
 import { Good} from "../../src/state/Good";
 import { Wharf } from "../../src/buildings/Wharf";
+import { Harbor } from "../../src/buildings/Harbor";
 
 describe("Captain", () => {
     let gs: GameState = null;
@@ -134,6 +135,20 @@ describe("Captain", () => {
                 const a = actions.find((a) => a.key == "shipCornBig");
                 a.apply(gs, gs.players[2]);
                 expect(gs.players[2].victoryPoints).toBe(2);
+                expect(gs.victoryPoints).toBe(expected);
+            });
+
+            it("adds a harbor bonus per shipment", () => {
+                gs.currentTurnPlayerIdx = 2;
+                gs.players[2].goods["corn"] = 2;
+                const b = new Harbor;
+                b.staff = 1;
+                gs.players[2].board.buildings.push(b);
+                const expected = gs.victoryPoints - 3;
+                const actions = role.availableActions(gs, gs.players[2]);
+                const a = actions.find((a) => a.key == "shipCornBig");
+                a.apply(gs, gs.players[2]);
+                expect(gs.players[2].victoryPoints).toBe(3);
                 expect(gs.victoryPoints).toBe(expected);
             });
 

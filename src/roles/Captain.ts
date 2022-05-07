@@ -62,6 +62,11 @@ export class Captain extends Role {
                 gs.takeVPs(1, player);
                 this.bonus = true;
             }
+
+            player.board.buildings
+                .filter((pb) => pb.phase == "shippingAction" && pb.staff > 0)
+                .forEach((pb) => pb.shippingAction(gs, player));
+
             gs.advancePlayer();
             return;
         };

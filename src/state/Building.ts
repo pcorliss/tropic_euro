@@ -26,5 +26,6 @@ export class Building {
     plantationPlacement(gs:GameState, pl: Plantation): void { return; }
     freePlantation(gs: GameState, player: Player): Action { return; }
     shippingOptions(player: Player, role: Role): Action[] { return; }
+    shippingAction(gs: GameState, player: Player): void { return; }
     endRole(gs?: GameState, player?: Player): void { return; }
 }

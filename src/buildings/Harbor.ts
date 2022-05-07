@@ -1,3 +1,5 @@
+import { GameState } from "../state/GameState";
+import { Player } from "../state/Player";
 import { Building } from "../state/Building";
 
 export class Harbor extends Building {
@@ -9,5 +11,10 @@ export class Harbor extends Building {
     staff = 0;
     points = 3;
     cost = 8;
-    phase = "shipping";
+    phase = "shippingAction";
+
+    shippingAction(gs: GameState, player: Player): void {
+        gs.takeVPs(1, player);
+        return;
+    }
 }
