@@ -3,6 +3,8 @@ import { Good } from "./Good";
 import { Plantation } from "./Plantation";
 import { Player } from "./Player";
 import { Action } from "./Action";
+import { Role } from "./Role";
+import { Ship } from "./Ship";
 
 export class Building {
     name: string;
@@ -15,6 +17,7 @@ export class Building {
     points: number;
     cost: number;
     phase: string;
+    ship: Ship = null;
 
     building(gs: GameState, p: Player, b: Building): void { return; }
     tradingBonus(p: Player): void { return; }
@@ -22,4 +25,6 @@ export class Building {
     plantationOptions(): string[] { return []; }
     plantationPlacement(gs:GameState, pl: Plantation): void { return; }
     freePlantation(gs: GameState, player: Player): Action { return; }
+    shippingOptions(player: Player, role: Role): Action[] { return; }
+    endRole(gs?: GameState, player?: Player): void { return; }
 }

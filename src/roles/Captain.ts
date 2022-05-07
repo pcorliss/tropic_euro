@@ -4,6 +4,7 @@ import { GameState } from "../state/GameState";
 import { Player } from "../state/Player";
 import { Good } from "../state/Good";
 import { Ship } from "../state/Ship";
+import { Wharf } from "../buildings/Wharf";
 export class Captain extends Role {
     name = "Captain";
     description = "";
@@ -32,6 +33,10 @@ export class Captain extends Role {
     }
 
     endRole(gs?: GameState, player?: Player): void {
+        gs.players
+            .flatMap((p) => p.board.buildings)
+            .filter((pb) => pb.phase == "shippingOptions" && pb.staff > 0)
+            .flatMap((pb) => pb.endRole(gs, player));
         gs.ships
             .filter((s) => s.full())
             .forEach((s) => {
@@ -43,25 +48,29 @@ export class Captain extends Role {
         return;
     }
 
+    shippingActionApply(good: Good, ship: Ship): (gs: GameState, player: Player) => void {
+        return (gs: GameState, player: Player): void => {
+            ship.goodType ||= good;
+            const spots = Math.min(
+                player.goods[good],
+                ship.spots - ship.goods
+            );
+            ship.goods += spots;
+            gs.takeVPs(spots, player);
+            player.goods[good] -= spots;
+            if (player == gs.currentPlayer() && !this.bonus) {
+                gs.takeVPs(1, player);
+                this.bonus = true;
+            }
+            gs.advancePlayer();
+            return;
+        };
+    }
+
     shippingAction(good: Good, ship: Ship): Action {
         return new Action(
             `ship${good[0].toUpperCase()}${good.slice(1)}${ship.size}`,
-            (gs: GameState, player: Player): void => {
-                ship.goodType ||= good;
-                const spots = Math.min(
-                    player.goods[good],
-                    ship.spots - ship.goods
-                );
-                ship.goods += spots;
-                gs.takeVPs(spots, player);
-                player.goods[good] -= spots;
-                if (player == gs.currentPlayer() && !this.bonus) {
-                    gs.takeVPs(1, player);
-                    this.bonus = true;
-                }
-                gs.advancePlayer();
-                return;
-            },
+            this.shippingActionApply(good, ship)
         );
     }
 
@@ -127,6 +136,11 @@ export class Captain extends Role {
         const actions = this.possibleShipments(gs, player).map(([g, s]) => 
             this.shippingAction(g, s)
         );
+
+        player.board.buildings
+            .filter((pb) => pb.phase == "shippingOptions" && pb.staff > 0)
+            .flatMap((pb) => pb.shippingOptions(player, this))
+            .forEach((a) => actions.push(a));
 
         // TODO is the spoil phase check here necessary?
         if (this.spoilPhase(gs) && actions.length == 0) {

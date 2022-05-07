@@ -2,6 +2,7 @@ import { GameState } from "../../src/state/GameState";
 import { Captain} from "../../src/roles/Captain";
 import { Player} from "../../src/state/Player";
 import { Good} from "../../src/state/Good";
+import { Wharf } from "../../src/buildings/Wharf";
 
 describe("Captain", () => {
     let gs: GameState = null;
@@ -76,6 +77,17 @@ describe("Captain", () => {
             const actions = role.availableActions(gs, player)
                 .filter((a) => a.key.startsWith("ship"));
             expect(actions).toHaveLength(0);
+        });
+
+        it("allows shipping onto a wharf for each type of good", () => {
+            player.goods["corn"] = 1;
+            player.goods["indigo"] = 1;
+            player.board.buildings.push(new Wharf);
+            player.board.buildings[0].staff = 1;
+            const actions = role.availableActions(gs, player);
+            const keys = actions.map((a) => a.key);
+            expect(keys).toContain("shipCornWharf");
+            expect(keys).toContain("shipIndigoWharf");
         });
 
         describe("action apply",() => {
@@ -169,6 +181,39 @@ describe("Captain", () => {
                 expect(gs.ships[2].spots).toBe(6);
                 expect(gs.ships[2].goods).toBe(6);
                 expect(player.goods["corn"]).toBe(1);
+            });
+
+            it("doesn't allow shipping different goods on the same wharf", () => {
+                player.goods["corn"] = 1;
+                player.goods["indigo"] = 1;
+                player.board.buildings.push(new Wharf);
+                player.board.buildings[0].staff = 1;
+                let actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "shipCornWharf");
+                a.apply(gs, player);
+
+                gs.currentTurnPlayerIdx = 0;
+                actions = role.availableActions(gs, player);
+                const keys = actions.map((a) => a.key);
+                expect(keys).not.toContain("shipCornWharf");
+                expect(keys).not.toContain("shipIndigoWharf");
+            });
+
+            it("the wharf always clears at the end of the role", () => {
+                player.goods["corn"] = 1;
+                const b: Wharf = new Wharf;
+                player.board.buildings.push(b);
+                b.staff = 1;
+                const expected = gs.goods.corn + 1;
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "shipCornWharf");
+                a.apply(gs, player);
+
+                expect(gs.currentRole).toBeNull();
+                expect(gs.goods["corn"]).toBe(expected);
+                expect(b.ship.goodType).toBe(null);
+                expect(b.ship.spots).toBe(99);
+                expect(b.ship.goods).toBe(0);
             });
         });
 
