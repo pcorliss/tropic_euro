@@ -4,7 +4,7 @@ import { GameState } from "../state/GameState";
 import { Player } from "../state/Player";
 import { Good } from "../state/Good";
 import { Ship } from "../state/Ship";
-import { Wharf } from "../buildings/Wharf";
+
 export class Captain extends Role {
     name = "Captain";
     description = "";
@@ -33,10 +33,14 @@ export class Captain extends Role {
     }
 
     endRole(gs?: GameState, player?: Player): void {
-        gs.players
-            .flatMap((p) => p.board.buildings)
-            .filter((pb) => pb.phase == "shippingOptions" && pb.staff > 0)
-            .flatMap((pb) => pb.endRole(gs, player));
+        gs.players.forEach((p) => {
+            p.board.buildings
+                .filter((pb) => (pb.phase == "shippingOptions" || pb.phase == "spoilOptions") && pb.staff > 0)
+                .forEach((pb) => pb.endRole(gs, p));
+        });
+            // .flatMap((p) => p.board.buildings)
+            // .filter((pb) => (pb.phase == "shippingOptions" || pb.phase == "spoilOptions") && pb.staff > 0)
+            // .flatMap((pb) => pb.endRole(gs, p));
         gs.ships
             .filter((s) => s.full())
             .forEach((s) => {
@@ -81,7 +85,7 @@ export class Captain extends Role {
 
     spoilAction(good: Good): Action {
         return new Action(
-            `keep${good[0].toUpperCase()}${good.slice(1)}`,
+            `keepOne${good[0].toUpperCase()}${good.slice(1)}`,
             (gs: GameState, player: Player): void => {
                 Object.keys(player.goods).forEach((g) => {
                     gs.goods[g as Good] += player.goods[g as Good];
@@ -149,10 +153,24 @@ export class Captain extends Role {
 
         // TODO is the spoil phase check here necessary?
         if (this.spoilPhase(gs) && actions.length == 0) {
+            const seenSpoilKey = new Set<string>();
+            player.board.buildings
+                .filter((pb) => pb.phase == "spoilOptions" && pb.staff > 0)
+                .flatMap((pb) => pb.spoilOptions(player))
+                .filter((sa) => {
+                    if (!seenSpoilKey.has(sa.key)) {
+                        seenSpoilKey.add(sa.key);
+                        return true;
+                    }
+                    return false;
+                }).forEach((a) => actions.push(a));
+            if (actions.length > 0) { return actions; }
+
             return this.possibleSpoils(gs, player).map((g) => 
                 this.spoilAction(g)
             );
         }
+        
         return actions;
     }
 }

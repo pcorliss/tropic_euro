@@ -4,6 +4,8 @@ import { Player} from "../../src/state/Player";
 import { Good} from "../../src/state/Good";
 import { Wharf } from "../../src/buildings/Wharf";
 import { Harbor } from "../../src/buildings/Harbor";
+import { SmallWarehouse } from "../../src/buildings/SmallWarehouse";
+import { LargeWarehouse } from "../../src/buildings/LargeWarehouse";
 
 describe("Captain", () => {
     let gs: GameState = null;
@@ -243,7 +245,7 @@ describe("Captain", () => {
                 actions = role.availableActions(gs, player);
                 
                 expect(actions).toHaveLength(1);
-                expect(actions[0].key).toBe("keepCorn");
+                expect(actions[0].key).toBe("keepOneCorn");
 
                 actions[0].apply(gs, player);
 
@@ -264,10 +266,10 @@ describe("Captain", () => {
                 a.apply(gs, player);
 
                 actions = role.availableActions(gs, player);
-                a = actions.find((a) => a.key == "keepCorn");
+                a = actions.find((a) => a.key == "keepOneCorn");
                 
                 expect(actions).toHaveLength(2);
-                expect(a.key).toBe("keepCorn");
+                expect(a.key).toBe("keepOneCorn");
 
                 a.apply(gs, player);
 
@@ -276,6 +278,67 @@ describe("Captain", () => {
                 expect(gs.goods["corn"]).toBe(expectedCorn);
                 expect(gs.goods["sugar"]).toBe(expectedSugar);
                 expect(gs.currentRole).toBeNull();
+            });
+
+            it("small warehouse allows keeping one type of good", () => {
+                player.goods["corn"] = 12;
+                player.goods["indigo"] = 12;
+                player.board.buildings.push(new SmallWarehouse);
+                player.board.buildings[0].staff = 1;
+
+                gs.ships.forEach((s) => {
+                    s.goodType = "corn";
+                    s.goods = s.spots;
+                });
+
+                let actions = role.availableActions(gs, player);
+                expect(actions).toHaveLength(2);
+                let keys = actions.map((a) => a.key);
+                expect(keys).toContain("storeCorn");
+                expect(keys).toContain("storeIndigo");
+                expect(keys).not.toContain("keepOneCorn");
+
+                const a = actions.find((a) => a.key == "storeCorn");
+                a.apply(gs, player);
+
+                expect(player.goods.corn).toBe(0);
+
+                actions = role.availableActions(gs, player);
+                expect(actions).toHaveLength(1);
+                keys = actions.map((a) => a.key);
+                expect(keys).toContain("keepOneIndigo");
+            });
+
+            it("small and large warehouses allow keeping three types of goods and don't clobber each other", () => {
+                player.goods["corn"] = 12;
+                player.goods["indigo"] = 12;
+                player.goods["tobacco"] = 12;
+                player.board.buildings.push(new SmallWarehouse);
+                player.board.buildings.push(new LargeWarehouse);
+                player.board.buildings[0].staff = 1;
+                player.board.buildings[1].staff = 1;
+
+                gs.ships.forEach((s) => {
+                    s.goodType = "corn";
+                    s.goods = s.spots;
+                });
+
+                let actions = role.availableActions(gs, player);
+                let keys = actions.map((a) => a.key);
+                expect(keys).toHaveLength(3);
+                expect(keys).toContain("storeCorn");
+                let a = actions.find((a) => a.key == "storeCorn");
+                a.apply(gs, player);
+                actions = role.availableActions(gs, player);
+                keys = actions.map((a) => a.key);
+                expect(keys).toHaveLength(2);
+                expect(keys).toContain("storeIndigo");
+                a = actions.find((a) => a.key == "storeIndigo");
+                a.apply(gs, player);
+                actions = role.availableActions(gs, player);
+                keys = actions.map((a) => a.key);
+                expect(keys).toHaveLength(1);
+                expect(keys).toContain("storeTobacco");
             });
         });
 
@@ -340,6 +403,26 @@ describe("Captain", () => {
                 expect(gs.ships[2].goodType).toBe("corn");
                 expect(gs.ships[2].goods).toBe(5);
                 expect(gs.goods["corn"]).toBe(0);
+            });
+
+            it("small warehouse goods restored to the player at the end of the round", () => {
+                player.goods["corn"] = 12;
+                const b = new SmallWarehouse;
+                b.staff = 1;
+                player.board.buildings.push(b);
+
+                gs.ships.forEach((s) => {
+                    s.goodType = "corn";
+                    s.goods = s.spots;
+                });
+
+                const actions = role.availableActions(gs, player);
+                const a = actions.find((a) => a.key == "storeCorn");
+                a.apply(gs, player);
+
+                expect(gs.currentRole).toBeNull();
+                expect(player.goods.corn).toBe(12);
+                expect(b.goods).toHaveLength(0);
             });
         });
     });

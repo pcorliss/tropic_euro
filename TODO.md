@@ -3,8 +3,8 @@ X   1     phase = "building";
    5     phase = "gameEnd";
 X   7     phase = "production";
 X   3     phase = "settling";
-   2     phase = "shipping";
-   2     phase = "spoiling";
+X  2     phase = "shipping";
+X   2     phase = "spoiling";
 X   1     phase = "trading";
 X   2     phase = "tradingBonus";
 * End Game check

@@ -1,6 +1,6 @@
-import { Building } from "../state/Building";
+import { SmallWarehouse } from "./SmallWarehouse";
 
-export class LargeWarehouse extends Building {
+export class LargeWarehouse extends SmallWarehouse {
     name = "Large Warehouse";
     production = false;
     description = "+2 good types may be stored";
@@ -9,5 +9,6 @@ export class LargeWarehouse extends Building {
     staff = 0;
     points = 2;
     cost = 6;
-    phase = "spoiling";
+    phase = "spoilOptions";
+    maxGoodRecords = 2;
 }
