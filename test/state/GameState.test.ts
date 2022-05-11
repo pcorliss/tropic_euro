@@ -1,3 +1,10 @@
+import { CityHall } from "../../src/buildings/CityHall";
+import { CustomsHouse } from "../../src/buildings/CustomsHouse";
+import { Fortress } from "../../src/buildings/Fortress";
+import { GuildHall } from "../../src/buildings/GuildHall";
+import { Residence } from "../../src/buildings/Residence";
+import { SmallIndigoPlant } from "../../src/buildings/SmallIndigoPlant";
+import { SmallMarket } from "../../src/buildings/SmallMarket";
 import { GameState } from "../../src/state/GameState";
 import { Role } from "../../src/state/Role";
 
@@ -345,6 +352,34 @@ describe("GameState", () => {
             gs.colonists = 3;
             expect(gs.takeColonists(5)).toBe(3);
             expect(gs.colonists).toBe(0);
+        });
+    });
+
+    describe("gameEnd", () => {
+        it("returns false", () => {
+            expect(gs.gameEnd()).toBeFalsy();
+        });
+
+        it("returns true if the cantRefill boolean is flipped", () => {
+            gs.cantRefillColonyShip = true;
+            expect(gs.gameEnd()).toBeTruthy();
+        });
+
+        it("returns true if a player has a full building section", () => {
+            const bs = gs.players[0].board.buildings;
+            bs.push(new Residence);
+            bs.push(new Fortress);
+            bs.push(new CityHall);
+            bs.push(new GuildHall);
+            bs.push(new CustomsHouse);
+            bs.push(new SmallIndigoPlant);
+            bs.push(new SmallMarket);
+            expect(gs.gameEnd()).toBeTruthy();
+        });
+
+        it("returns true if vps are gone", () => {
+            gs.victoryPoints = 0;
+            expect(gs.gameEnd()).toBeTruthy();
         });
     });
 });

@@ -62,6 +62,7 @@ export class GameState {
     currentTurnPlayerIdx = 0;
     currentRole: Role = null;
     tradingHouse: Good[] = [];
+    cantRefillColonyShip = false;
 
     goods: Record<Good, number> = {
         corn: 10,
@@ -327,5 +328,15 @@ export class GameState {
         const grant = Math.min(request, this.colonists);
         this.colonists -= grant;
         return grant;
+    }
+
+    gameEnd(): boolean {
+        if (this.cantRefillColonyShip) { return true; }
+        if (this.victoryPoints <= 0) { return true; }
+        const fullBuildingMat = this.players.some((p) => {
+            return p.board.buildings.reduce((sum, b) => sum += b.size, 0) >= 12;
+        });
+        if (fullBuildingMat) { return true; }
+        return false;
     }
 }

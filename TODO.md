@@ -7,7 +7,6 @@ X  2     phase = "shipping";
 X   2     phase = "spoiling";
 X   1     phase = "trading";
 X   2     phase = "tradingBonus";
-* End Game check
 * End Game scoring
 * Captain (or other roles) could stall if there's no actions possible on first player.
 * Roles should have advance player skip players with no options
