@@ -1,3 +1,4 @@
+import { Player } from "../state/Player";
 import { Building } from "../state/Building";
 
 export class GuildHall extends Building {
@@ -10,4 +11,11 @@ export class GuildHall extends Building {
     points = 4;
     cost = 10;
     phase = "gameEnd";
+
+    gameEnd(player: Player): number {
+        return player.board.buildings
+            .filter((b) => b.production)
+            .map((b) => b.staffSpots > 1 ? 2 : 1)
+            .reduce((sum, b) => sum += b, 0);
+    }
 }

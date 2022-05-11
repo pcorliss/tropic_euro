@@ -1,3 +1,4 @@
+import { Player } from "../state/Player";
 import { Building } from "../state/Building";
 
 export class Fortress extends Building {
@@ -10,4 +11,8 @@ export class Fortress extends Building {
     points = 4;
     cost = 10;
     phase = "gameEnd";
+
+    gameEnd(player: Player): number {
+        return Math.floor(player.board.totalColonists() / 3);
+    }
 }

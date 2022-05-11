@@ -5,6 +5,7 @@ import { Player } from "./Player";
 import { Action } from "./Action";
 import { Role } from "./Role";
 import { Ship } from "./Ship";
+import { Board } from "./Board";
 
 export class Building {
     name: string;
@@ -29,6 +30,6 @@ export class Building {
     shippingAction(gs: GameState, player: Player): void { return; }
     spoilOptions(player: Player): Action[] { return; }
     endRole(gs?: GameState, player?: Player): void { return; }
-
     spoiling(player: Player): Action[] { return; }
+    gameEnd(player: Player): number { return 0; }
 }

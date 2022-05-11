@@ -1,3 +1,4 @@
+import { Player } from "../state/Player";
 import { Building } from "../state/Building";
 
 export class CustomsHouse extends Building {
@@ -10,4 +11,8 @@ export class CustomsHouse extends Building {
     points = 4;
     cost = 10;
     phase = "gameEnd";
+
+    gameEnd(player: Player): number {
+        return Math.floor(player.victoryPoints / 4);
+    }
 }

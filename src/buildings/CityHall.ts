@@ -1,3 +1,4 @@
+import { Player } from "../state/Player";
 import { Building } from "../state/Building";
 
 export class CityHall extends Building {
@@ -10,4 +11,8 @@ export class CityHall extends Building {
     points = 4;
     cost = 10;
     phase = "gameEnd";
+
+    gameEnd(player: Player): number {
+        return player.board.buildings.filter((b) => !b.production).length;
+    }
 }
