@@ -73,7 +73,11 @@ describe("Mayor", () => {
             expect(player.board.plantations[0].staffed).toBeTruthy();
         });
 
-        // triggers game end if supply runs out
+        it("sets game end if supply is insufficient to refill the ship", () => {
+            gs.colonists = 1;
+            role.chooseAction.apply(gs, player);
+            expect(gs.gameEnd()).toBeTruthy();
+        });
     });
 
     describe("endRole", () => {

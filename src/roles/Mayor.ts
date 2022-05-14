@@ -37,6 +37,7 @@ export class Mayor extends Role {
         const openSpots = gs.players.reduce((sum, p) => sum += p.board.openBuildingSpaces(), 0);
         const refill = Math.max(openSpots, gs.players.length);
         gs.colonyShip = gs.takeColonists(refill);
+        gs.cantRefillColonyShip = refill > gs.colonyShip;
 
         return;
     };
