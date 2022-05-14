@@ -173,4 +173,15 @@ export class Captain extends Role {
         
         return actions;
     }
+    chooseCaptain = (gs: GameState, player: Player) => {
+        this.chooseThisRole(gs, player);
+        return;
+    };
+
+    get chooseAction(): Action {
+        return new Action(
+            `choose${this.name}`,
+            this.chooseCaptain,
+        );
+    }
 }

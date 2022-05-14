@@ -225,8 +225,8 @@ describe("GameState", () => {
 
     describe("applyAction", () => {
         it("applies an action using the key", () => {
-            gs.applyAction(gs.players[0], "chooseTrader");
-            expect(gs.currentRole.name).toBe("Trader");
+            gs.applyAction(gs.players[0], "chooseMayor");
+            expect(gs.currentRole.name).toBe("Mayor");
         });
 
         it("does nothing if the key can not be found", () => {

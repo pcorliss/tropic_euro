@@ -19,6 +19,20 @@ describe("Captain", () => {
         player = gs.players[0];
     });
 
+    describe("chooseThisRole", () => {
+        it("skips first player with no actions", () => {
+            gs.players[2].goods.corn = 1;
+            role.chooseThisRole(gs, player);
+            expect(gs.currentTurnPlayerIdx).toBe(2);
+        });
+
+        it("ends the round if no players have actions", () => {
+            role.chooseThisRole(gs, player);
+            expect(gs.currentRole).toBeNull();
+            expect(gs.currentPlayerIdx).toBe(1);
+        });
+    });
+
     describe("availableActions", () => {
         it("returns nothing if the player is not the current turn player", () => {
             gs.players[1].goods["corn"] = 1;

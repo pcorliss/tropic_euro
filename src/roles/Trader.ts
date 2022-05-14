@@ -17,6 +17,8 @@ export class Trader extends Role {
         "coffee": 4,
     };
 
+    skipPlayersWithNoActions = true;
+
     endRole(gs?: GameState, player?: Player): void {
         if (gs.tradingHouse.length >= 4) {
             gs.tradingHouse.forEach((g) => {

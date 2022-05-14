@@ -28,6 +28,13 @@ export class Role {
         }
         player.doubloons += this.doubloons;
         this.doubloons = 0;
+
+        if(this.skipPlayersWithNoActions) {
+            if (this.availableActions(gs, gs.currentPlayer()).length == 0) {
+               gs.advancePlayer(); 
+            }
+        }
+
         return;
     };
     get chooseAction(): Action {
