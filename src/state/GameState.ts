@@ -326,8 +326,13 @@ export class GameState {
 
     takeColonists(request: number): number {
         const grant = Math.min(request, this.colonists);
+        const newReq = request - grant;
         this.colonists -= grant;
-        return grant;
+
+        const shipGrant = Math.min(newReq, this.colonyShip);
+        this.colonyShip -= shipGrant;
+
+        return grant + shipGrant;
     }
 
     gameEnd(): boolean {

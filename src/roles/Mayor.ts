@@ -17,6 +17,7 @@ export class Mayor extends Role {
 
         const colonistsPerPlayer = Math.floor(gs.colonyShip / gs.players.length);
         const extraColonists = gs.colonyShip % gs.players.length;
+        gs.colonyShip = 0;
 
         player.board.sanJuanColonists += gs.takeColonists(1);
 

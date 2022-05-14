@@ -344,14 +344,24 @@ describe("GameState", () => {
     describe("takeColonists", () => {
         it("takes from supply", () => {
             const expected = gs.colonists - 1;
+            gs.colonyShip = 0;
             expect(gs.takeColonists(1)).toBe(1);
             expect(gs.colonists).toBe(expected);
         });
 
         it("doesn't take more than in supply", () => {
             gs.colonists = 3;
+            gs.colonyShip = 0;
             expect(gs.takeColonists(5)).toBe(3);
             expect(gs.colonists).toBe(0);
+        });
+
+        it("takes from the ship if the supply is empty", () => {
+            gs.colonists = 1;
+            gs.colonyShip = 2;
+            expect(gs.takeColonists(2)).toBe(2);
+            expect(gs.colonists).toBe(0);
+            expect(gs.colonyShip).toBe(1);
         });
     });
 
