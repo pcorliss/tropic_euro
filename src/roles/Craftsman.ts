@@ -34,6 +34,9 @@ export class Craftsman extends Role {
                     },
                     {corn: 99} as Record<Good, number>
                 );
+
+            const goodsProduced: Good[] = [];
+
             Object.keys(plants).forEach((pl: Good) => {
                 const production = Math.min(
                     plants[pl],
@@ -42,10 +45,17 @@ export class Craftsman extends Role {
                 );
                 p.goods[pl] += production;
                 gs.goods[pl] -= production;
-                if (i == 0 && production > 0) {
-                    this.firstPlayerGoodsProduced.push(pl);
+                if (production > 0) {
+                    goodsProduced.push(pl);
+                    if (i == 0) {
+                        this.firstPlayerGoodsProduced.push(pl);
+                    }
                 }
             });
+
+            p.board.buildings
+                .filter((pb) => pb.phase == "produce" && pb.staff > 0)
+                .forEach((pb) => pb.produce(p, goodsProduced));
         }
 
 

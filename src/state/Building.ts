@@ -32,4 +32,5 @@ export class Building {
     endRole(gs?: GameState, player?: Player): void { return; }
     spoiling(player: Player): Action[] { return; }
     gameEnd(player: Player): number { return 0; }
+    produce(player: Player, goods: Good[]): void { return; }
 }

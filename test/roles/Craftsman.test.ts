@@ -9,6 +9,7 @@ import { LargeSugarMill } from "../../src/buildings/LargeSugarMill";
 import { LargeIndigoPlant } from "../../src/buildings/LargeIndigoPlant";
 import { TobaccoStorage } from "../../src/buildings/TobaccoStorage";
 import { CoffeeRoaster } from "../../src/buildings/CoffeeRoaster";
+import { Factory } from "../../src/buildings/Factory";
 
 describe("Craftsman", () => {
     let gs: GameState = null;
@@ -135,6 +136,34 @@ describe("Craftsman", () => {
             role.chooseAction.apply(gs, player);
 
             expect(player.goods["coffee"]).toBe(1);
+        });
+
+        const params: [number, string[]][] = [
+            [0, ["corn"]],
+            [1, ["corn", "indigo"]],
+            [2, ["corn", "indigo", "sugar"]],
+            [3, ["corn", "indigo", "sugar", "tobacco"]],
+            [5, ["corn", "indigo", "sugar", "tobacco", "coffee"]],
+        ];
+        params.forEach((testParams: [number, string[]]) => {
+            const bonus = testParams[0];
+            const goods = testParams[1];
+            it(`issues ${bonus} bonus doubloons for the factory and ${goods.length} good types produced`, () => {
+                goods.forEach((g) => player.board.plantations.push(new Plantation(g)));
+                player.board.buildings.push(new Factory());
+                player.board.buildings.push(new SmallSugarMill());
+                player.board.buildings.push(new SmallIndigoPlant());
+                player.board.buildings.push(new TobaccoStorage());
+                player.board.buildings.push(new CoffeeRoaster());
+
+                player.board.plantations.forEach((pl) => pl.staffed = true );
+                player.board.buildings.forEach((pl) => pl.staff = 1 );
+
+                const startingDoubloons = player.doubloons;
+                role.chooseAction.apply(gs, player);
+
+                expect(player.doubloons - startingDoubloons).toBe(bonus);
+            });
         });
 
         it("targets the current player first then the others in order", () => {
