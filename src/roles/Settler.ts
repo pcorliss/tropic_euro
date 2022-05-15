@@ -33,7 +33,7 @@ export class Settler extends Role {
 
         player.board.buildings
             .filter((pb) => pb.phase == "plantationOptions" && pb.staff > 0)
-            .flatMap((pb) => pb.plantationOptions())
+            .flatMap((pb) => pb.plantationOptions(gs))
             .forEach((pt) => plantationTypes.add(pt));
 
         actions.push(

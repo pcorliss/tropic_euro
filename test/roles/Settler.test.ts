@@ -43,6 +43,16 @@ describe("Settler", () => {
             expect(actionKeys).toContain("chooseQuarry");
         });
 
+        it("returns no quarries for a construction hut if there's none left", () => {
+            gs.quarries = 0;
+            gs.currentTurnPlayerIdx = 1;
+            gs.players[1].board.buildings.push(new ConstructionHut);
+            gs.players[1].board.buildings[0].staff = 1;
+            const actions = role.availableActions(gs, gs.players[1]);
+            const actionKeys = actions.map((a) => a.key);
+            expect(actionKeys).not.toContain("chooseQuarry");
+        });
+
         it("returns one action for each good", () => {
             gs.visiblePlantations = [
                 new Plantation("indigo"),

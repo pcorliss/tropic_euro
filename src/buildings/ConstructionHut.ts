@@ -1,3 +1,4 @@
+import { GameState } from "../state/GameState";
 import { Building } from "../state/Building";
 
 export class ConstructionHut extends Building {
@@ -11,7 +12,10 @@ export class ConstructionHut extends Building {
     cost = 2;
     phase = "plantationOptions";
 
-    plantationOptions(): string[] {
-        return ["quarry"];
+    plantationOptions(gs: GameState): string[] {
+        if (gs.quarries > 0) {
+            return ["quarry"];
+        }
+        return [];
     }
 }

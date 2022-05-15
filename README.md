@@ -17,7 +17,3 @@ npm install
 npm test
 npm run watch-test
 ```
-
-## Bugs
-
-* Construction hut grants a quarry even if none remain
