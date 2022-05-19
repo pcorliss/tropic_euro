@@ -1,18 +1,18 @@
 import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
+import * as fs from "fs";
 
 // Construct a schema, using GraphQL schema language
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
+const schema = buildSchema(fs.readFileSync("./src/schema.graphql", "utf8"));
 
 // // The root provides a resolver function for each API endpoint
 const root = {
   hello: () => {
     return "Hello pie!";
+  },
+  dolly: () => {
+    return "Hello cake!";
   },
 };
 
