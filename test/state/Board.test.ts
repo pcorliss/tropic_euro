@@ -4,7 +4,6 @@ import { Board } from "../../src/state/Board";
 import { Plantation } from "../../src/state/Plantation";
 
 import { plainToClass } from "class-transformer";
-import { Building } from "../../src/state/Building";
 
 
 describe("Board", () => {

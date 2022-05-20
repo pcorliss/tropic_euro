@@ -5,7 +5,6 @@ import { Player } from "./Player";
 import { Action } from "./Action";
 import { Role } from "./Role";
 import { Ship } from "./Ship";
-import { Board } from "./Board";
 
 export class Building {
     name: string;

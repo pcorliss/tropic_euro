@@ -41,6 +41,7 @@ import { Captain } from "../roles/Captain";
 import { Prospector } from "../roles/Prospector";
 
 import { shuffle } from "lodash";
+import { plainToClassFromExist } from "class-transformer";
 
 export class GameState {
     players: Player[];
@@ -259,6 +260,11 @@ export class GameState {
         this.initVPs();
         this.initTradeShips();
         this.initRoles();
+    }
+
+    static hydrate(blob: GameState): GameState {
+        const newGS = new GameState(["a", "b", "c"]);
+        return plainToClassFromExist(newGS, blob);
     }
 
     getAvailableActions(player: Player): Action[] {
