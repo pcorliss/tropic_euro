@@ -41,7 +41,7 @@ import { Captain } from "../roles/Captain";
 import { Prospector } from "../roles/Prospector";
 
 import { shuffle } from "lodash";
-import { plainToClassFromExist } from "class-transformer";
+import { plainToClass } from "class-transformer";
 
 export class GameState {
     players: Player[];
@@ -250,7 +250,10 @@ export class GameState {
         return this.players[this.governorIdx];
     }
 
-    constructor(playerNames: string[]) {
+    constructor(playerNames?: string[]) {
+        if (playerNames == null) {
+            playerNames = ["", "", ""];
+        }
         const shuffledNames = shuffle(playerNames);
         this.players = shuffledNames.map(n => new Player(n));
         this.players.forEach((p) => p.doubloons = this.players.length - 1);
@@ -263,8 +266,7 @@ export class GameState {
     }
 
     static hydrate(blob: GameState): GameState {
-        const newGS = new GameState(["a", "b", "c"]);
-        return plainToClassFromExist(newGS, blob);
+        return plainToClass(GameState, blob);
     }
 
     getAvailableActions(player: Player): Action[] {

@@ -6,7 +6,6 @@ import { Residence } from "../../src/buildings/Residence";
 import { SmallIndigoPlant } from "../../src/buildings/SmallIndigoPlant";
 import { SmallMarket } from "../../src/buildings/SmallMarket";
 import { GameState } from "../../src/state/GameState";
-import { Plantation } from "../../src/state/Plantation";
 import { Role } from "../../src/state/Role";
 
 describe("GameState", () => {
@@ -19,6 +18,11 @@ describe("GameState", () => {
 
     describe("constructor", () => {
         it("inits players", () => {
+            expect(gs.players.length).toBe(3);
+        });
+
+        it("handles no arguments", () => {
+            gs = new GameState();
             expect(gs.players.length).toBe(3);
         });
 
@@ -197,12 +201,10 @@ describe("GameState", () => {
 
     describe("hydrate", () => {
         it("reconstitutes a gs from JSON", () => {
+            const names = ["Alice", "Bob", "Carol", "Dave"];
+            gs = new GameState(names);
             const gsJSObj = JSON.parse(JSON.stringify(gs));
             const newGS = GameState.hydrate(gsJSObj);
-            expect(newGS.players.length).toBe(gs.players.length);
-            expect(newGS.players[0].name).toBe(gs.players[0].name);
-            expect(newGS.players[1].name).toBe(gs.players[1].name);
-            expect(newGS.players[2].name).toBe(gs.players[2].name);
             expect(JSON.stringify(newGS)).toBe(JSON.stringify(gs));
         });
     });
