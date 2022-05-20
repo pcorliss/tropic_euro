@@ -58,6 +58,8 @@ export class GameState {
     roles: Role[];
     availableRoles: Role[];
     roundCounter = 0;
+    actionCounter = 0;
+    lastChange = +new Date();
     governorIdx = 0;
     currentPlayerIdx = 0;
     currentTurnPlayerIdx = 0;
@@ -281,6 +283,8 @@ export class GameState {
         this.getAvailableActions(player)
             .find(action => action.key == key)
             ?.apply(this, player);
+        this.actionCounter++;
+        this.lastChange = +new Date();
     }
 
     advancePlayer(): void {

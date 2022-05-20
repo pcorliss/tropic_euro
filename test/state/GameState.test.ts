@@ -248,6 +248,18 @@ describe("GameState", () => {
             gs.applyAction(gs.players[0], "fake");
             expect(gs.currentRole).toBeNull();
         });
+
+        it("increments the action counter", () => {
+            gs.applyAction(gs.players[0], "chooseMayor");
+            expect(gs.actionCounter).toBe(1);
+        });
+
+        it("sets the lastChange field", () => {
+            const ts = new Date("2022-01-01");
+            jest.useFakeTimers().setSystemTime(ts);
+            gs.applyAction(gs.players[0], "chooseMayor");
+            expect(gs.lastChange).toBe(+ts);
+        });
     });
 
     describe("endRole", () => {
