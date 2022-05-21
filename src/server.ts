@@ -2,6 +2,7 @@ import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
 import * as fs from "fs";
+import { GameState } from "./state/GameState";
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(fs.readFileSync("./src/schema.graphql", "utf8"));
@@ -13,6 +14,9 @@ const root = {
   },
   dolly: () => {
     return "Hello cake!";
+  },
+  gameState: () => {
+    return JSON.stringify(new GameState(["Alice", "Bob", "Carol"]));
   },
 };
 

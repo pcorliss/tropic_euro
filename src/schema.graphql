@@ -1,4 +1,14 @@
+type Game {
+    gameState: String
+    # player: Player
+}
+
+type GameState {
+    id: String
+}
+
 type Query {
     hello: String
     dolly: String
+    gameState: String
 }
