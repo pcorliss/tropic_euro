@@ -196,7 +196,29 @@ describe("GameState", () => {
                 expect(roles).toEqual(expect.arrayContaining(expectedRoles));
                 expect(roles.length).toBe(expectedRoles.length);
             });
+
+            it("inits a random gs id", () => {
+                expect(gs.id).toHaveLength(32);
+                expect(typeof(gs.id)).toBe(typeof(""));
+            });
         });
+    });
+
+    describe("save and find", () => {
+        xit("it retrieves a game state by id", () => {
+            gs.id = "aaa";
+            gs.save();
+            const newGS = GameState.find("aaa");
+            expect(JSON.stringify(newGS)).toBe(JSON.stringify(gs));
+        });
+
+        // xit("it throws an error if it can't find by id", () => {
+        //     const names = ["Alice", "Bob", "Carol", "Dave"];
+        //     gs = new GameState(names);
+        //     const gsJSObj = JSON.parse(JSON.stringify(gs));
+        //     const newGS = GameState.hydrate(gsJSObj);
+        //     expect(JSON.stringify(newGS)).toBe(JSON.stringify(gs));
+        // });
     });
 
     describe("hydrate", () => {

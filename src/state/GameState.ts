@@ -66,6 +66,7 @@ export class GameState {
     currentRole: Role = null;
     tradingHouse: Good[] = [];
     cantRefillColonyShip = false;
+    id: string = null;
 
     goods: Record<Good, number> = {
         corn: 10,
@@ -337,6 +338,14 @@ export class GameState {
         return false;
     }
 
+    randomID(): string {
+        let result = "";
+        for ( let i = 0; i < 32; i++ ) {
+            result += String.fromCharCode(97 + Math.floor(Math.random() * 26));
+        }
+        return result;
+    }
+
     constructor(playerNames?: string[]) {
         if (playerNames == null) {
             playerNames = ["", "", ""];
@@ -350,9 +359,17 @@ export class GameState {
         this.initVPs();
         this.initTradeShips();
         this.initRoles();
+        this.id = this.randomID();
+    }
+
+    save(): void {
+        return;
     }
 
     static hydrate(blob: GameState): GameState {
         return plainToClass(GameState, blob);
+    }
+    static find(id: string): GameState {
+        return null;
     }
 }
