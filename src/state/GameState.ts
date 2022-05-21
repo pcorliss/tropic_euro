@@ -251,26 +251,6 @@ export class GameState {
     governor(): Player {
         return this.players[this.governorIdx];
     }
-
-    constructor(playerNames?: string[]) {
-        if (playerNames == null) {
-            playerNames = ["", "", ""];
-        }
-        const shuffledNames = shuffle(playerNames);
-        this.players = shuffledNames.map(n => new Player(n));
-        this.players.forEach((p) => p.doubloons = this.players.length - 1);
-        this.initBuildings();
-        this.initPlantations();
-        this.initColonists();
-        this.initVPs();
-        this.initTradeShips();
-        this.initRoles();
-    }
-
-    static hydrate(blob: GameState): GameState {
-        return plainToClass(GameState, blob);
-    }
-
     getAvailableActions(player: Player): Action[] {
         if(this.currentTurnPlayer() != player) { return []; }
         if(this.currentRole === null) {
@@ -355,5 +335,24 @@ export class GameState {
         });
         if (fullBuildingMat) { return true; }
         return false;
+    }
+
+    constructor(playerNames?: string[]) {
+        if (playerNames == null) {
+            playerNames = ["", "", ""];
+        }
+        const shuffledNames = shuffle(playerNames);
+        this.players = shuffledNames.map(n => new Player(n));
+        this.players.forEach((p) => p.doubloons = this.players.length - 1);
+        this.initBuildings();
+        this.initPlantations();
+        this.initColonists();
+        this.initVPs();
+        this.initTradeShips();
+        this.initRoles();
+    }
+
+    static hydrate(blob: GameState): GameState {
+        return plainToClass(GameState, blob);
     }
 }
