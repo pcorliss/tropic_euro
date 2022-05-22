@@ -242,25 +242,22 @@ describe("GameState", () => {
         });
 
         it("it retrieves a game state by id", () => {
-            gs.id = "aaa";
             gs.save();
-            const newGS = GameState.find(Db.conn, "aaa");
+            const newGS = GameState.find(Db.conn, gs.id);
             expect(JSON.stringify(newGS)).toBe(JSON.stringify(gs));
         });
 
         it("retrieves the latest copy of the game state", () => {
-            gs.id = "aaa";
             gs.save();
 
             const expectedColonists = gs.colonists - 4;
-            const newTime = gs.lastChange + 1;
-            jest.useFakeTimers().setSystemTime(newTime);
+            const expectedActions = gs.actionCounter + 1;
 
             gs.applyAction(gs.players[0], "chooseMayor");
             expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(2);
 
-            const newGS = GameState.find(Db.conn, "aaa");
-            expect(newGS.lastChange).toBe(newTime);
+            const newGS = GameState.find(Db.conn, gs.id);
+            expect(newGS.actionCounter).toBe(expectedActions);
             expect(newGS.colonists).toBe(expectedColonists);
         });
 
@@ -277,7 +274,6 @@ describe("GameState", () => {
             altGs.applyAction(gs.players[0], "chooseMayor");
             expect(() => {gs.applyAction(gs.players[0], "chooseMayor");})
                 .toThrow("UNIQUE constraint failed: gamestate.id, gamestate.actions");
-            return;
         });
     });
 

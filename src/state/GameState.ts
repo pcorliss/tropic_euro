@@ -407,7 +407,7 @@ export class GameState {
     }
     static find(conn: Database, id: string): GameState {
         const sqlGS = conn
-            .prepare("SELECT state FROM gamestate WHERE id = ? ORDER BY updated_at DESC LIMIT 1")
+            .prepare("SELECT state FROM gamestate WHERE id = ? ORDER BY actions DESC LIMIT 1")
             .pluck()
             .get(id);
         if (!sqlGS) {
