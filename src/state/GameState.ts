@@ -372,14 +372,24 @@ export class GameState {
             return false;
         }
         this.dbConn
-            .prepare("INSERT INTO gamestate VALUES (?, ?, ?)")
-            .run(this.id, this.lastChange, JSON.stringify(this));
+            .prepare("INSERT INTO gamestate VALUES (?, ?, ?, ?)")
+            .run(this.id, this.actionCounter, this.lastChange, JSON.stringify(this));
         return true;
     }
 
     migrations(): Migration[] {
         return [
-            {priority: 0, migration: "CREATE TABLE gamestate (id TEXT, updated_at INT, state TEXT)"},
+            {priority: 0, migration: `
+                CREATE TABLE
+                gamestate
+                (
+                    id TEXT,
+                    actions INT,
+                    updated_at INT,
+                    state TEXT,
+                    PRIMARY KEY (id, actions)
+                );
+            `},
         ];
     }
     public set dbConn(conn: Database) {

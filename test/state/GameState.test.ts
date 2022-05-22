@@ -9,6 +9,7 @@ import { GameState } from "../../src/state/GameState";
 import { Role } from "../../src/state/Role";
 import { Db } from "../../src/Db";
 import exp from "constants";
+import { addListener } from "process";
 
 describe("GameState", () => {
     let gs: GameState = null;
@@ -266,6 +267,17 @@ describe("GameState", () => {
         it("it throws an error if it can't find by id", () => {
             expect(() => {GameState.find(Db.conn, "aaa");})
                 .toThrow("No GameState Found with ID 'aaa'");
+        });
+
+        it("avoids race conditions by using the action counter as part of the primary key", () => {
+            gs.save();
+            const altGs = GameState.find(Db.conn, gs.id);
+            altGs.dbConn = Db.conn;
+
+            altGs.applyAction(gs.players[0], "chooseMayor");
+            expect(() => {gs.applyAction(gs.players[0], "chooseMayor");})
+                .toThrow("UNIQUE constraint failed: gamestate.id, gamestate.actions");
+            return;
         });
     });
 
