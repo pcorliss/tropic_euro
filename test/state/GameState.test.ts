@@ -8,8 +8,6 @@ import { SmallMarket } from "../../src/buildings/SmallMarket";
 import { GameState } from "../../src/state/GameState";
 import { Role } from "../../src/state/Role";
 import { Db } from "../../src/Db";
-import exp from "constants";
-import { addListener } from "process";
 
 describe("GameState", () => {
     let gs: GameState = null;
