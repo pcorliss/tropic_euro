@@ -8,9 +8,13 @@ export type Migration = {
 export class Db {
     static conn: Database;
 
-    static init(): void {
+    static init(options?: any): void {
+        options ||= {};
+        if (!options["verbose"] && process.env.DB_VERBOSE) {
+            options["verbose"] = console.log;
+        }
         const dbFile = process.env.DB || ":memory:";
-        Db.conn ||= new DatabaseConstructor(dbFile, { verbose: console.log });
+        Db.conn ||= new DatabaseConstructor(dbFile, options);
     }
 
     static migrate(migrations: Migration[]): void {
@@ -31,18 +35,3 @@ export class Db {
         return;
     }
 }
-// const db = new Database(":memory:", { verbose: console.log });
-
-// db.prepare("CREATE TABLE lorem (info text)").run();
-// const insert = db.prepare("INSERT into lorem VALUES (?)");
-// insert.run("Text A");
-// insert.run("Text B");
-// insert.run("Text C");
-
-// const select = db.prepare("SELECT * FROM lorem");
-// console.log("Single Row", select.get());
-// console.log("All Rows", select.all());
-
-// for (const row of select.iterate()) {
-//     console.log("Row:", row);
-// }
