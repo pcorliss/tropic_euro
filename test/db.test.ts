@@ -1,4 +1,5 @@
 import { Db, Migration } from "../src/Db";
+import { unlink } from "node:fs";
 
 describe("Db", () => {
     afterEach(() => {
@@ -18,6 +19,19 @@ describe("Db", () => {
             const conn = Db.conn;
             Db.init();
             expect(conn).toBe(Db.conn);
+        });
+
+        it("creates an in memory db", () => {
+            Db.init();
+            expect(Db.conn.memory).toBeTruthy();
+        });
+
+        it("Creates db as a file if the DB env var is set", () => {
+            process.env.DB = "db/test.sqlite";
+            Db.init();
+            expect(Db.conn.memory).toBeFalsy();
+            unlink(process.env.DB, () => {return;});
+            delete process.env.DB;
         });
     });
 

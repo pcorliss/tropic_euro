@@ -9,7 +9,8 @@ export class Db {
     static conn: Database;
 
     static init(): void {
-        Db.conn ||= new DatabaseConstructor(":memory:", { verbose: console.log });
+        const dbFile = process.env.DB || ":memory:";
+        Db.conn ||= new DatabaseConstructor(dbFile, { verbose: console.log });
     }
 
     static migrate(migrations: Migration[]): void {
