@@ -7,6 +7,8 @@ import { SmallIndigoPlant } from "../../src/buildings/SmallIndigoPlant";
 import { SmallMarket } from "../../src/buildings/SmallMarket";
 import { GameState } from "../../src/state/GameState";
 import { Role } from "../../src/state/Role";
+import { Db } from "../../src/Db";
+import exp from "constants";
 
 describe("GameState", () => {
     let gs: GameState = null;
@@ -204,21 +206,67 @@ describe("GameState", () => {
         });
     });
 
+    describe("setDBConn", () => {
+        it("it runs migrations", () => {
+            Db.init();
+            gs.dbConn = Db.conn;
+            expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(0);
+            Db.conn.close();
+            Db.conn = undefined;
+        });
+    });
+
     describe("save and find", () => {
-        xit("it retrieves a game state by id", () => {
+        beforeEach(() => {
+            Db.init();
+            gs.dbConn = Db.conn;
+        });
+
+        afterEach(() => {
+            Db.conn.close();
+            Db.conn = undefined;
+        });
+
+        it("saves the gameState to the DB", () => {
+            gs.dbConn = Db.conn;
+            expect(gs.save()).toBeTruthy();
+            expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(1);
+            expect(Db.conn.prepare("SELECT id FROM gamestate").pluck().get()).toBe(gs.id);
+            expect(Db.conn.prepare("SELECT state FROM gamestate").pluck().get()).toBe(JSON.stringify(gs));
+        });
+
+        it("returns false if there's no db connection", () => {
+            gs.dbConn = null;
+            expect(gs.save()).toBeFalsy();
+        });
+
+        it("it retrieves a game state by id", () => {
             gs.id = "aaa";
             gs.save();
-            const newGS = GameState.find("aaa");
+            const newGS = GameState.find(Db.conn, "aaa");
             expect(JSON.stringify(newGS)).toBe(JSON.stringify(gs));
         });
 
-        // xit("it throws an error if it can't find by id", () => {
-        //     const names = ["Alice", "Bob", "Carol", "Dave"];
-        //     gs = new GameState(names);
-        //     const gsJSObj = JSON.parse(JSON.stringify(gs));
-        //     const newGS = GameState.hydrate(gsJSObj);
-        //     expect(JSON.stringify(newGS)).toBe(JSON.stringify(gs));
-        // });
+        it("retrieves the latest copy of the game state", () => {
+            gs.id = "aaa";
+            gs.save();
+
+            const expectedColonists = gs.colonists - 4;
+            const newTime = gs.lastChange + 1;
+            jest.useFakeTimers().setSystemTime(newTime);
+
+            gs.applyAction(gs.players[0], "chooseMayor");
+            expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(2);
+
+            const newGS = GameState.find(Db.conn, "aaa");
+            expect(newGS.lastChange).toBe(newTime);
+            expect(newGS.colonists).toBe(expectedColonists);
+        });
+
+        it("it throws an error if it can't find by id", () => {
+            expect(() => {GameState.find(Db.conn, "aaa");})
+                .toThrow("No GameState Found with ID 'aaa'");
+        });
     });
 
     describe("hydrate", () => {
@@ -281,6 +329,15 @@ describe("GameState", () => {
             jest.useFakeTimers().setSystemTime(ts);
             gs.applyAction(gs.players[0], "chooseMayor");
             expect(gs.lastChange).toBe(+ts);
+        });
+
+        it("saves the state", () => {
+            Db.init();
+            gs.dbConn = Db.conn;
+            gs.applyAction(gs.players[0], "chooseMayor");
+            expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(1);
+            Db.conn.close();
+            Db.conn = undefined;
         });
     });
 

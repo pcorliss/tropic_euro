@@ -40,8 +40,11 @@ import { Trader } from "../roles/Trader";
 import { Captain } from "../roles/Captain";
 import { Prospector } from "../roles/Prospector";
 
+import { Migration, Db } from "../Db";
+
 import { shuffle } from "lodash";
 import { plainToClass } from "class-transformer";
+import {Database} from "better-sqlite3";
 
 export class GameState {
     players: Player[];
@@ -67,6 +70,7 @@ export class GameState {
     tradingHouse: Good[] = [];
     cantRefillColonyShip = false;
     id: string = null;
+    _dbConn: Database;
 
     goods: Record<Good, number> = {
         corn: 10,
@@ -266,6 +270,7 @@ export class GameState {
             ?.apply(this, player);
         this.actionCounter++;
         this.lastChange = +new Date();
+        this.save();
     }
 
     advancePlayer(): void {
@@ -362,14 +367,42 @@ export class GameState {
         this.id = this.randomID();
     }
 
-    save(): void {
-        return;
+    save(): boolean {
+        if (!this.dbConn) {
+            return false;
+        }
+        this.dbConn
+            .prepare("INSERT INTO gamestate VALUES (?, ?, ?)")
+            .run(this.id, this.lastChange, JSON.stringify(this));
+        return true;
+    }
+
+    migrations(): Migration[] {
+        return [
+            {priority: 0, migration: "CREATE TABLE gamestate (id TEXT, updated_at INT, state TEXT)"},
+        ];
+    }
+    public set dbConn(conn: Database) {
+        this._dbConn = conn;
+        Db.migrate(this.migrations());
+    }
+
+    public get dbConn() {
+        return this._dbConn;
     }
 
     static hydrate(blob: GameState): GameState {
+        // console.log("Hydrating:", blob);
         return plainToClass(GameState, blob);
     }
-    static find(id: string): GameState {
-        return null;
+    static find(conn: Database, id: string): GameState {
+        const sqlGS = conn
+            .prepare("SELECT state FROM gamestate WHERE id = ? ORDER BY updated_at DESC LIMIT 1")
+            .pluck()
+            .get(id);
+        if (!sqlGS) {
+            throw(`No GameState Found with ID '${id}'`);
+        }
+        return GameState.hydrate(JSON.parse(sqlGS));
     }
 }
