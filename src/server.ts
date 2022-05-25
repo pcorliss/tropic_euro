@@ -4,27 +4,27 @@ import { buildSchema } from "graphql";
 import * as fs from "fs";
 import { GameState } from "./state/GameState";
 
-// Construct a schema, using GraphQL schema language
-const schema = buildSchema(fs.readFileSync("./src/schema.graphql", "utf8"));
+export class Server {
+  app = express();
 
-// // The root provides a resolver function for each API endpoint
-const root = {
-  hello: () => {
-    return "Hello pie!";
-  },
-  dolly: () => {
-    return "Hello cake!";
-  },
-  gameState: () => {
-    return JSON.stringify(new GameState(["Alice", "Bob", "Carol"]));
-  },
-};
+  constructor() {
+    // Construct a schema, using GraphQL schema language
+    const schema = buildSchema(fs.readFileSync("./src/schema.graphql", "utf8"));
 
-const app = express();
-app.use("/graphql", graphqlHTTP({
-  schema: schema,
-  rootValue: root,
-  graphiql: true,
-}));
-app.listen(4000);
-console.log("Running a GraphQL API server at http://localhost:4000/graphql");
+    // // The root provides a resolver function for each API endpoint
+    const root = {
+      hello: () => {
+        return "Hello pie!";
+      },
+      gameState: () => {
+        return JSON.stringify(new GameState(["Alice", "Bob", "Carol"]));
+      },
+    };
+
+    this.app.use("/graphql", graphqlHTTP({
+      schema: schema,
+      rootValue: root,
+      graphiql: true,
+    }));
+  }
+}

@@ -6,19 +6,21 @@
     "test": "jest --forceExit --coverage --verbose",
     "watch-test": "jest --watchAll",
     "watch-ts": "tsc -w",
-    "start": "ts-node src/server.ts",
-    "start-dev": "nodemon src/server.ts",
+    "start": "ts-node src/run.ts",
+    "start-dev": "nodemon src/run.ts",
     "watch": "npm run watch-ts"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.5.0",
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.181",
+    "@types/request-promise": "^4.1.48",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "chai": "^4.3.6",
     "eslint": "^8.13.0",
     "jest": "^27.5.1",
     "nodemon": "^2.0.16",
+    "request-promise": "^4.2.6",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"

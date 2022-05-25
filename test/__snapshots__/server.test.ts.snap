@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`server Hello Pie! 1`] = `
+Object {
+  "data": Object {
+    "hello": "Hello pie!",
+  },
+}
+`;
