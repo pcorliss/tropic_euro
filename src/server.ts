@@ -3,11 +3,14 @@ import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
 import * as fs from "fs";
 import { GameState } from "./state/GameState";
+import { Db } from "../src/Db";
 
 export class Server {
   app = express();
 
   constructor() {
+    Db.init();
+
     // Construct a schema, using GraphQL schema language
     const schema = buildSchema(fs.readFileSync("./src/schema.graphql", "utf8"));
 
@@ -16,8 +19,11 @@ export class Server {
       hello: () => {
         return "Hello pie!";
       },
-      gameState: () => {
-        return JSON.stringify(new GameState(["Alice", "Bob", "Carol"]));
+      gameState: (obj: {id: string}) => {
+        // console.log("Obj:", Object.keys(obj));
+        return JSON.stringify(
+          GameState.find(Db.conn, obj.id)
+        );
       },
     };
 

@@ -9,5 +9,5 @@ type GameState {
 
 type Query {
     hello: String
-    gameState: String
+    gameState(id: String): String
 }

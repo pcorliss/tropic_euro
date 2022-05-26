@@ -377,7 +377,7 @@ export class GameState {
         return true;
     }
 
-    migrations(): Migration[] {
+    static migrations(): Migration[] {
         return [
             {priority: 0, migration: `
                 CREATE TABLE
@@ -394,7 +394,7 @@ export class GameState {
     }
     public set dbConn(conn: Database) {
         this._dbConn = conn;
-        Db.migrate(this.migrations());
+        Db.migrate(GameState.migrations());
     }
 
     public get dbConn() {
@@ -406,6 +406,9 @@ export class GameState {
         return plainToClass(GameState, blob);
     }
     static find(conn: Database, id: string): GameState {
+        Db.init();
+        Db.migrate(GameState.migrations());
+
         const sqlGS = conn
             .prepare("SELECT state FROM gamestate WHERE id = ? ORDER BY actions DESC LIMIT 1")
             .pluck()

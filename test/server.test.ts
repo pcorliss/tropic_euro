@@ -1,6 +1,10 @@
-import RequestPromise from "request-promise";
 import { Server } from "../src/server";
+import { GameState } from "../src/state/GameState";
+
+import RequestPromise from "request-promise";
 import * as http from "http";
+import { unlink } from "node:fs";
+import { Db } from "../src/Db";
 
 const API = "http://localhost:4999/graphql";
 
@@ -9,12 +13,16 @@ describe("server", () => {
     let l: http.Server = null;
 
     beforeAll(async () => {
+        process.env.DB = "db/test.sqlite";
         s = new Server();
         l = s.app.listen(4999);
     });
 
     afterAll(async () => {
         l.close();
+        Db.conn.close();
+        unlink(process.env.DB, () => {return;});
+        delete process.env.DB;
     });
 
     it("Hello Pie!", async () => {
@@ -27,5 +35,28 @@ describe("server", () => {
         const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
         expect(response.data.hello).toBe("Hello pie!");
         expect(response).toMatchSnapshot();
+    });
+
+    describe("Get GameState", () => {
+        it("looks up a gamestate by id", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            Db.init();
+            gs.dbConn = Db.conn;
+            gs.id = "aaa";
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "${gs.id}")
+                }
+            `;
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(JSON.parse(response.data.gameState).id).toBe(gs.id);
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
     });
 });
