@@ -241,7 +241,7 @@ describe("GameState", () => {
 
         it("it retrieves a game state by id", () => {
             gs.save();
-            const newGS = GameState.find(Db.conn, gs.id);
+            const newGS = GameState.find(gs.id);
             expect(JSON.stringify(newGS)).toBe(JSON.stringify(gs));
         });
 
@@ -254,19 +254,19 @@ describe("GameState", () => {
             gs.applyAction(gs.players[0], "chooseMayor");
             expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(2);
 
-            const newGS = GameState.find(Db.conn, gs.id);
+            const newGS = GameState.find(gs.id);
             expect(newGS.actionCounter).toBe(expectedActions);
             expect(newGS.colonists).toBe(expectedColonists);
         });
 
         it("it throws an error if it can't find by id", () => {
-            expect(() => {GameState.find(Db.conn, "aaa");})
+            expect(() => {GameState.find("aaa");})
                 .toThrow("No GameState Found with ID 'aaa'");
         });
 
         it("avoids race conditions by using the action counter as part of the primary key", () => {
             gs.save();
-            const altGs = GameState.find(Db.conn, gs.id);
+            const altGs = GameState.find(gs.id);
             altGs.dbConn = Db.conn;
 
             altGs.applyAction(gs.players[0], "chooseMayor");

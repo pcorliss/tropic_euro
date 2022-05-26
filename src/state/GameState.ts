@@ -405,11 +405,11 @@ export class GameState {
         // console.log("Hydrating:", blob);
         return plainToClass(GameState, blob);
     }
-    static find(conn: Database, id: string): GameState {
+    static find(id: string): GameState {
         Db.init();
         Db.migrate(GameState.migrations());
 
-        const sqlGS = conn
+        const sqlGS = Db.conn
             .prepare("SELECT state FROM gamestate WHERE id = ? ORDER BY actions DESC LIMIT 1")
             .pluck()
             .get(id);

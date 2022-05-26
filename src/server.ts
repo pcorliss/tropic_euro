@@ -22,7 +22,7 @@ export class Server {
       gameState: (obj: {id: string}) => {
         // console.log("Obj:", Object.keys(obj));
         return JSON.stringify(
-          GameState.find(Db.conn, obj.id)
+          GameState.find(obj.id)
         );
       },
     };
