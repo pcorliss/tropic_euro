@@ -14,7 +14,7 @@ export class Server {
     // Construct a schema, using GraphQL schema language
     const schema = buildSchema(fs.readFileSync("./src/schema.graphql", "utf8"));
 
-    // // The root provides a resolver function for each API endpoint
+    // The root provides a resolver function for each API endpoint
     const root = {
       hello: () => {
         return "Hello pie!";

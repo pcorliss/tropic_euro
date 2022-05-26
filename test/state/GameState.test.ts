@@ -205,20 +205,9 @@ describe("GameState", () => {
         });
     });
 
-    describe("setDBConn", () => {
-        it("it runs migrations", () => {
-            Db.init();
-            gs.dbConn = Db.conn;
-            expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(0);
-            Db.conn.close();
-            Db.conn = undefined;
-        });
-    });
-
-    describe("save and find", () => {
+    describe("state management", () => {
         beforeEach(() => {
             Db.init();
-            gs.dbConn = Db.conn;
         });
 
         afterEach(() => {
@@ -226,52 +215,63 @@ describe("GameState", () => {
             Db.conn = undefined;
         });
 
-        it("saves the gameState to the DB", () => {
-            gs.dbConn = Db.conn;
-            expect(gs.save()).toBeTruthy();
-            expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(1);
-            expect(Db.conn.prepare("SELECT id FROM gamestate").pluck().get()).toBe(gs.id);
-            expect(Db.conn.prepare("SELECT state FROM gamestate").pluck().get()).toBe(JSON.stringify(gs));
+        describe("find", () => {
+            it("it runs migrations", () => {
+                try {
+                    GameState.find("aaa");
+                } catch(error) { }
+                expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(0);
+            });
+
+            it("retrieves the latest copy of the game state", () => {
+                gs.save();
+
+                const expectedColonists = gs.colonists - 4;
+                const expectedActions = gs.actionCounter + 1;
+
+                gs.applyAction(gs.players[0], "chooseMayor");
+                expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(2);
+
+                const newGS = GameState.find(gs.id);
+                expect(newGS.actionCounter).toBe(expectedActions);
+                expect(newGS.colonists).toBe(expectedColonists);
+            });
+
+            it("it throws an error if it can't find by id", () => {
+                expect(() => {GameState.find("aaa");})
+                    .toThrow("No GameState Found with ID 'aaa'");
+            });
         });
 
-        it("returns false if there's no db connection", () => {
-            gs.dbConn = null;
-            expect(gs.save()).toBeFalsy();
-        });
+        describe("save", () => {
+            it("it runs migrations", () => {
+                try {
+                    gs.save();
+                } catch(error) { }
+                expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(1);
+            });
 
-        it("it retrieves a game state by id", () => {
-            gs.save();
-            const newGS = GameState.find(gs.id);
-            expect(JSON.stringify(newGS)).toBe(JSON.stringify(gs));
-        });
+            it("saves the gameState to the DB", () => {
+                expect(gs.save()).toBeTruthy();
+                expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(1);
+                expect(Db.conn.prepare("SELECT id FROM gamestate").pluck().get()).toBe(gs.id);
+                expect(Db.conn.prepare("SELECT state FROM gamestate").pluck().get()).toBe(JSON.stringify(gs));
+            });
 
-        it("retrieves the latest copy of the game state", () => {
-            gs.save();
+            it("it retrieves a game state by id", () => {
+                gs.save();
+                const newGS = GameState.find(gs.id);
+                expect(JSON.stringify(newGS)).toBe(JSON.stringify(gs));
+            });
 
-            const expectedColonists = gs.colonists - 4;
-            const expectedActions = gs.actionCounter + 1;
-
-            gs.applyAction(gs.players[0], "chooseMayor");
-            expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(2);
-
-            const newGS = GameState.find(gs.id);
-            expect(newGS.actionCounter).toBe(expectedActions);
-            expect(newGS.colonists).toBe(expectedColonists);
-        });
-
-        it("it throws an error if it can't find by id", () => {
-            expect(() => {GameState.find("aaa");})
-                .toThrow("No GameState Found with ID 'aaa'");
-        });
-
-        it("avoids race conditions by using the action counter as part of the primary key", () => {
-            gs.save();
-            const altGs = GameState.find(gs.id);
-            altGs.dbConn = Db.conn;
-
-            altGs.applyAction(gs.players[0], "chooseMayor");
-            expect(() => {gs.applyAction(gs.players[0], "chooseMayor");})
-                .toThrow("UNIQUE constraint failed: gamestate.id, gamestate.actions");
+            it("avoids race conditions by using the action counter as part of the primary key", () => {
+                gs.save();
+                const altGs = GameState.find(gs.id);
+    
+                altGs.applyAction(gs.players[0], "chooseMayor");
+                expect(() => {gs.applyAction(gs.players[0], "chooseMayor");})
+                    .toThrow("UNIQUE constraint failed: gamestate.id, gamestate.actions");
+            });
         });
     });
 
@@ -338,8 +338,12 @@ describe("GameState", () => {
         });
 
         it("saves the state", () => {
+            if (Db.conn) {
+                Db.conn.close();
+                Db.conn = undefined;
+            }
+
             Db.init();
-            gs.dbConn = Db.conn;
             gs.applyAction(gs.players[0], "chooseMayor");
             expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(1);
             Db.conn.close();

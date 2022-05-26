@@ -70,7 +70,6 @@ export class GameState {
     tradingHouse: Good[] = [];
     cantRefillColonyShip = false;
     id: string = null;
-    _dbConn: Database;
 
     goods: Record<Good, number> = {
         corn: 10,
@@ -368,10 +367,9 @@ export class GameState {
     }
 
     save(): boolean {
-        if (!this.dbConn) {
-            return false;
-        }
-        this.dbConn
+        Db.migrate(GameState.migrations());
+
+        Db.conn
             .prepare("INSERT INTO gamestate VALUES (?, ?, ?, ?)")
             .run(this.id, this.actionCounter, this.lastChange, JSON.stringify(this));
         return true;
@@ -391,14 +389,6 @@ export class GameState {
                 );
             `},
         ];
-    }
-    public set dbConn(conn: Database) {
-        this._dbConn = conn;
-        Db.migrate(GameState.migrations());
-    }
-
-    public get dbConn() {
-        return this._dbConn;
     }
 
     static hydrate(blob: GameState): GameState {
