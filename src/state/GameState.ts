@@ -406,7 +406,6 @@ export class GameState {
         return plainToClass(GameState, blob);
     }
     static find(id: string): GameState {
-        Db.init();
         Db.migrate(GameState.migrations());
 
         const sqlGS = Db.conn

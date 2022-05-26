@@ -37,7 +37,6 @@ describe("Db", () => {
 
     describe("migrate", () => {
         it("runs migrations", () => {
-            Db.init();
             const a = { priority: 0, migration: "CREATE TABLE a (info text);" };
             const b = { priority: 1, migration: "CREATE TABLE b (info text);" };
 
@@ -47,22 +46,16 @@ describe("Db", () => {
         });
 
         it("runs migrations in priority order", () => {
-            Db.init();
             const a = { priority: 0, migration: "CREATE TABLE a (info text);" };
             const b = { priority: 1, migration: "ALTER TABLE a RENAME info TO cake;" };
             Db.migrate([b, a]);
         });
 
         it("skips migrations that have been run before", () => {
-            Db.init();
             const a = { priority: 0, migration: "CREATE TABLE a (info text);" };
             const b = { priority: 1, migration: "ALTER TABLE a RENAME info TO cake;" };
             Db.migrate([a]);
             Db.migrate([a,b]);
         });
     });
-
-    // describe("insert", () => {
-
-    // });
 });

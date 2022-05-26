@@ -18,6 +18,7 @@ export class Db {
     }
 
     static migrate(migrations: Migration[]): void {
+        this.init();
         const migrationsCreate = "CREATE TABLE IF NOT EXISTS migrations (priority INTEGER)";
         Db.conn.prepare(migrationsCreate).run();
         const migrationExists = Db.conn.prepare("SELECT 1 FROM migrations WHERE priority = ?");
