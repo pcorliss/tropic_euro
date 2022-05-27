@@ -11,14 +11,14 @@ describe("server", () => {
     let s: Server = null;
     let l: http.Server = null;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         s = new Server();
         l = s.app.listen(4999);
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         l.close();
-        Db.conn.close();
+        Db.close();
     });
 
     it("Hello Pie!", async () => {
@@ -36,8 +36,6 @@ describe("server", () => {
     describe("Get GameState", () => {
         it("looks up a gamestate by id", async () => {
             const gs = new GameState(["Alice", "Bob", "Carol"]);
-            Db.init();
-            gs.id = "aaa";
             gs.save();
             const query = `
                 query {

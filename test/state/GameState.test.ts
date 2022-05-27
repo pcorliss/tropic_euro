@@ -211,8 +211,7 @@ describe("GameState", () => {
         });
 
         afterEach(() => {
-            Db.conn.close();
-            Db.conn = undefined;
+            Db.close();
         });
 
         describe("find", () => {
@@ -338,16 +337,11 @@ describe("GameState", () => {
         });
 
         it("saves the state", () => {
-            if (Db.conn) {
-                Db.conn.close();
-                Db.conn = undefined;
-            }
-
+            Db.close();
             Db.init();
             gs.applyAction(gs.players[0], "chooseMayor");
             expect(Db.conn.prepare("SELECT COUNT(*) FROM gamestate").pluck().get()).toBe(1);
-            Db.conn.close();
-            Db.conn = undefined;
+            Db.close();
         });
     });
 

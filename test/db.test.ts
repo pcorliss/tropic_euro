@@ -3,7 +3,7 @@ import { unlink } from "node:fs";
 
 describe("Db", () => {
     afterEach(() => {
-        Db.conn.close();
+        Db.conn?.close();
         Db.conn = undefined;
     });
 
@@ -56,6 +56,18 @@ describe("Db", () => {
             const b = { priority: 1, migration: "ALTER TABLE a RENAME info TO cake;" };
             Db.migrate([a]);
             Db.migrate([a,b]);
+        });
+    });
+
+    describe("close", () => {
+        it("closes open connections", () => {
+            Db.init();
+            Db.close();
+            expect(Db.conn).toBeUndefined();
+        });
+
+        it("doesn't blow up if there is not an open connection", () => {
+            expect(Db.close).not.toThrow();
         });
     });
 });

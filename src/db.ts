@@ -35,4 +35,12 @@ export class Db {
             });
         return;
     }
+
+    static close(): void {
+        if (this && this.conn) {
+            this.conn.close();
+            this.conn = undefined;
+        }
+        return;
+    }
 }
