@@ -44,7 +44,6 @@ import { Migration, Db } from "../Db";
 
 import { shuffle } from "lodash";
 import { plainToClass } from "class-transformer";
-import {Database} from "better-sqlite3";
 
 export class GameState {
     players: Player[];

@@ -8,7 +8,7 @@ export type Migration = {
 export class Db {
     static conn: Database;
 
-    static init(options?: any): void {
+    static init(options?: DatabaseConstructor.Options): void {
         options ||= {};
         if (!options["verbose"] && process.env.DB_VERBOSE) {
             options["verbose"] = console.log;
