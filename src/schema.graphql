@@ -1,6 +1,7 @@
 type GameState {
     id: ID!
     json: String
+    actions: Int
 }
 
 type Query {

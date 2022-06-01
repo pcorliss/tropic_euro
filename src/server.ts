@@ -21,8 +21,10 @@ export class Server {
       },
       gameState: (obj: {id: string}) => {
         const gs = GameState.find(obj.id);
+
         return {
           id: gs.id,
+          actions: gs.actionCounter,
           json: JSON.stringify(gs)
         };
       },
