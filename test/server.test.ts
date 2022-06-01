@@ -36,16 +36,21 @@ describe("server", () => {
     describe("Get GameState", () => {
         it("looks up a gamestate by id", async () => {
             const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
             gs.save();
             const query = `
                 query {
-                    gameState(id: "${gs.id}")
+                    gameState(id: "aaa") {
+                        id
+                        json
+                    }
                 }
             `;
 
             const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
             try {
-                expect(JSON.parse(response.data.gameState).id).toBe(gs.id);
+                expect(response.data.gameState.id).toBe(gs.id);
+                expect(JSON.parse(response.data.gameState.json).id).toBe(gs.id);
             } catch (error) {
                 console.error(response);
                 throw(error);

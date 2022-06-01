@@ -1,13 +1,9 @@
-type Game {
-    gameState: String
-    # player: Player
-}
-
 type GameState {
-    id: String
+    id: ID!
+    json: String
 }
 
 type Query {
     hello: String
-    gameState(id: String): String
+    gameState(id: String): GameState
 }

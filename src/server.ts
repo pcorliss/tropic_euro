@@ -20,10 +20,11 @@ export class Server {
         return "Hello pie!";
       },
       gameState: (obj: {id: string}) => {
-        // console.log("Obj:", Object.keys(obj));
-        return JSON.stringify(
-          GameState.find(obj.id)
-        );
+        const gs = GameState.find(obj.id);
+        return {
+          id: gs.id,
+          json: JSON.stringify(gs)
+        };
       },
     };
 
