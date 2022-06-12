@@ -7,7 +7,7 @@
     "watch-test": "jest --watchAll",
     "watch-ts": "tsc -w",
     "start": "ts-node src/run.ts",
-    "start-dev": "nodemon src/run.ts",
+    "start-dev": "DB_VERBOSE=true DB=./db/dev.sqlite nodemon src/run.ts",
     "watch": "npm run watch-ts"
   },
   "devDependencies": {
