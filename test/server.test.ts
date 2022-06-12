@@ -42,7 +42,7 @@ describe("server", () => {
                 query {
                     gameState(id: "aaa") {
                         id
-                        actions
+                        actionCounter
                         json
                     }
                 }
@@ -51,7 +51,7 @@ describe("server", () => {
             const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
             try {
                 expect(response.data.gameState.id).toBe(gs.id);
-                expect(response.data.gameState.actions).toBe(0);
+                expect(response.data.gameState.actionCounter).toBe(0);
                 expect(JSON.parse(response.data.gameState.json).id).toBe(gs.id);
             } catch (error) {
                 console.error(response);
