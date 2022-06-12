@@ -58,5 +58,26 @@ describe("server", () => {
                 throw(error);
             }
         });
+
+        // it("looks up a gamestate by id", async () => {
+        //     const gs = new GameState(["Alice", "Bob", "Carol"]);
+        //     gs.id = "aaa";
+        //     gs.save();
+        //     const query = `
+        //         query {
+        //             gameState(id: "aaa") {
+        //                 availableActions(playerId: "Alice")
+        //             }
+        //         }
+        //     `;
+
+        //     const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+        //     try {
+        //         expect(response.data.gameState.availableActions).toBe("cake");
+        //     } catch (error) {
+        //         console.error(response);
+        //         throw(error);
+        //     }
+        // });
     });
 });

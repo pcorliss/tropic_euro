@@ -19,14 +19,9 @@ export class Server {
       hello: () => {
         return "Hello pie!";
       },
-      gameState: (obj: {id: string}) => {
-        const gs = GameState.find(obj.id);
-
-        return {
-          id: gs.id,
-          actions: gs.actionCounter,
-          json: JSON.stringify(gs)
-        };
+      gameState: ({id}: {id: string}) => {
+        const gs = GameState.find(id);
+        return gs;
       },
     };
 

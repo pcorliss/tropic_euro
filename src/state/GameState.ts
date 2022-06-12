@@ -254,11 +254,23 @@ export class GameState {
     governor(): Player {
         return this.players[this.governorIdx];
     }
+
+    availableActions({playerId}: { playerId: string }): Action[] {
+        const p = this.players.find((p) => p.name == playerId);
+        return this.getAvailableActions(p);
+    }
+
+    json(): string {
+        return JSON.stringify(this);
+    }
+
     getAvailableActions(player: Player): Action[] {
+        // TODO This is no longer valid for non-role stuff.
         if(this.currentTurnPlayer() != player) { return []; }
         if(this.currentRole === null) {
             return this.availableRoles.map((role) => role.chooseAction);
         }
+        // TODO Actually get actions
         return [];
     }
 

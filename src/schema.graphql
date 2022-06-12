@@ -1,7 +1,13 @@
+type Action {
+    key: ID!
+}
+
 type GameState {
     id: ID!
     json: String
-    actions: Int
+    actionCounter: Int
+    roundCounter: Int
+    availableActions(playerId: String): [Action]
 }
 
 type Query {
