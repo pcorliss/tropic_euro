@@ -4,6 +4,7 @@ type Action {
 
 type Building {
     name: ID!
+    description: String
 }
 
 type GameState {
