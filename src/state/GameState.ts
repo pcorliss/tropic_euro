@@ -295,8 +295,8 @@ export class GameState {
         if(this.currentRole === null) {
             return this.availableRoles.map((role) => role.chooseAction);
         }
-        // TODO Actually get actions
-        return [];
+
+        return this.currentRole.availableActions(this, player);
     }
 
     applyAction(player: Player, key: string): void {

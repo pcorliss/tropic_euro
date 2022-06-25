@@ -352,14 +352,35 @@ describe("GameState", () => {
     });
 
     describe("getAvailableActions", () => {
-        it("returns an empty array if player is not current player", () => {
-            expect(gs.getAvailableActions(gs.players[1])).toHaveLength(0);
+        describe("chooseRole", () => {
+            it("returns an empty array if player is not current player", () => {
+                expect(gs.getAvailableActions(gs.players[1])).toHaveLength(0);
+            });
+
+            it("returns available role actions", () => {
+                expect(gs.getAvailableActions(gs.players[0])).toHaveLength(6);
+                expect(gs.getAvailableActions(gs.players[0])[0].key).toBe("chooseSettler");
+            });
         });
 
-        it("current role is null it returns available role actions", () => {
-            expect(gs.getAvailableActions(gs.players[0])).toHaveLength(6);
-            expect(gs.getAvailableActions(gs.players[0])[0].key).toBe("chooseSettler");
+        describe("role actions", () => {
+            it("returns a list of available actions", () => {
+                gs.applyAction(gs.players[0], "chooseBuilder");
+                expect(gs.getAvailableActions(gs.players[0])).not.toHaveLength(0);
+                expect(gs.getAvailableActions(gs.players[0])[1].key).toContain("buy");
+            });
+
+            it("returns an empty array if player is not current turn player", () => {
+                gs.applyAction(gs.players[0], "chooseBuilder");
+                gs.applyAction(gs.players[0], "skip");
+                expect(gs.currentTurnPlayerIdx).toBe(1);
+                expect(gs.getAvailableActions(gs.players[0])).toHaveLength(0);
+                expect(gs.getAvailableActions(gs.players[1])).not.toHaveLength(0);
+            });
         });
+
+
+        // TODO could add non first player check here for the mayor role since it can run parallel
     });
 
     describe("applyAction", () => {
