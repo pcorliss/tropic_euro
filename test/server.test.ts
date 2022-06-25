@@ -213,8 +213,31 @@ describe("server", () => {
                 expect(response.data.gameState.ships).toHaveLength(3);
                 expect(response.data.gameState.ships[0].spots).toBe(4);
                 expect(response.data.gameState.ships[0].goods).toBe(0);
-                // expect(response.data.gameState.ships[0].goodType).toBeNull();
+                expect(response.data.gameState.ships[0].goodType).toBeUndefined();
                 expect(response.data.gameState.ships[0].size).toBe("Sml");
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
+
+        it("returns trading house goods", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            gs.tradingHouse.push("corn");
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "aaa") {
+                        tradingHouse
+                    }
+                }
+            `;
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.gameState.tradingHouse).toHaveLength(1);
+                expect(response.data.gameState.tradingHouse[0]).toBe("corn");
             } catch (error) {
                 console.error(response);
                 throw(error);
