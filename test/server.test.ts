@@ -43,7 +43,6 @@ describe("server", () => {
                     gameState(id: "aaa") {
                         id
                         actionCounter
-                        json
                         quarries
                         colonists
                         colonyShip
@@ -60,7 +59,6 @@ describe("server", () => {
                 expect(response.data.gameState.colonists).toBe(55);
                 expect(response.data.gameState.colonyShip).toBe(3);
                 expect(response.data.gameState.victoryPoints).toBe(75);
-                expect(JSON.parse(response.data.gameState.json).id).toBe(gs.id);
             } catch (error) {
                 console.error(response);
                 throw(error);

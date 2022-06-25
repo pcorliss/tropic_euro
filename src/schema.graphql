@@ -9,7 +9,7 @@ type Building {
 
 type GameState {
     id: ID!
-    json: String
+    # json: String - This contians private info. do not share
     actionCounter: Int
     roundCounter: Int
     buildings: [Building]
