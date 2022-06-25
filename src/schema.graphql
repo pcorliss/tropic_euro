@@ -7,6 +7,17 @@ type Building {
     description: String
 }
 
+type Role {
+    name: ID!
+    description: String
+    doubloons: Int
+}
+
+type Plantation {
+    type: ID!
+    staffed: Boolean
+}
+
 type GameState {
     id: ID!
     # json: String - This contians private info. do not share
@@ -22,12 +33,12 @@ type GameState {
 
     # lastChange: Int - "Int cannot represent non 32-bit signed integer value: 1656194269745"
 
-    # visiblePlantations: [Plantation]
+    visiblePlantations: [Plantation]
 
     # ships: [Ship]
 
-    # availableRoles: [Role]
-    # currentRole: Role
+    availableRoles: [Role]
+    currentRole: Role
 
     # players: [Player]
     # governor: Player

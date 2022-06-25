@@ -65,6 +65,91 @@ describe("server", () => {
             }
         });
 
+        it("Allows null Role", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "aaa") {
+                        currentRole {
+                            name
+                            description
+                            doubloons
+                        }
+                    }
+                }
+            `;
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.gameState.currentRole).toBeNull();
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
+
+        it("returns role information", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            gs.currentRole = gs.availableRoles[0];
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "aaa") {
+                        currentRole {
+                            name
+                            description
+                            doubloons
+                        }
+                        availableRoles {
+                            name
+                        }
+                    }
+                }
+            `;
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.gameState.currentRole.name).toBe("Settler");
+                expect(response.data.gameState.currentRole.description).toBe("");
+                expect(response.data.gameState.currentRole.doubloons).toBe(0);
+                expect(response.data.gameState.availableRoles).toHaveLength(6);
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
+
+        it("returns plantations", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            gs.currentRole = gs.availableRoles[0];
+            gs.visiblePlantations[0].type = "corn";
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "aaa") {
+                        visiblePlantations {
+                            type
+                            staffed
+                        }
+                    }
+                }
+            `;
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.gameState.visiblePlantations).toHaveLength(4);
+                expect(response.data.gameState.visiblePlantations[0].type).toBe("corn");
+                expect(response.data.gameState.visiblePlantations[0].staffed).toBeFalsy();
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
+
         it("looks up available actions for a player", async () => {
             const gs = new GameState(["Alice", "Bob", "Carol"]);
             gs.id = "aaa";
