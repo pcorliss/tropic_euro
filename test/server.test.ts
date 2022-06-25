@@ -192,6 +192,35 @@ describe("server", () => {
             }
         });
 
+        it("returns ships", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "aaa") {
+                        ships {
+                            spots
+                            goods
+                            size
+                        }
+                    }
+                }
+            `;
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.gameState.ships).toHaveLength(3);
+                expect(response.data.gameState.ships[0].spots).toBe(4);
+                expect(response.data.gameState.ships[0].goods).toBe(0);
+                // expect(response.data.gameState.ships[0].goodType).toBeNull();
+                expect(response.data.gameState.ships[0].size).toBe("Sml");
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
+
         it("looks up available actions for a player", async () => {
             const gs = new GameState(["Alice", "Bob", "Carol"]);
             gs.id = "aaa";

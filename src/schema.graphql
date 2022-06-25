@@ -23,6 +23,13 @@ type Player {
     doubloons: Int
 }
 
+type Ship {
+    spots: Int
+    goods: Int
+    # goodType: Good;
+    size: ID!
+}
+
 type GameState {
     id: ID!
     # json: String - This contians private info. do not share
@@ -40,7 +47,7 @@ type GameState {
 
     visiblePlantations: [Plantation]
 
-    # ships: [Ship]
+    ships: [Ship]
 
     availableRoles: [Role]
     currentRole: Role
