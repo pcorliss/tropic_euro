@@ -18,6 +18,11 @@ type Plantation {
     staffed: Boolean
 }
 
+type Player {
+    name: ID!
+    doubloons: Int
+}
+
 type GameState {
     id: ID!
     # json: String - This contians private info. do not share
@@ -40,10 +45,10 @@ type GameState {
     availableRoles: [Role]
     currentRole: Role
 
-    # players: [Player]
-    # governor: Player
-    # currentPlayer: Player
-    # currentTurnPlayer: Player
+    players: [Player]
+    governor: Player
+    currentPlayer: Player
+    currentTurnPlayer: Player
 
     # tradingHouse: [Good]
 

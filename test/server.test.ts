@@ -150,6 +150,48 @@ describe("server", () => {
             }
         });
 
+        it("returns players", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            const aliceIdx = gs.players.findIndex((p) => p.name == "Alice");
+            gs.governorIdx = aliceIdx;
+            gs.currentPlayerIdx = aliceIdx;
+            gs.currentTurnPlayerIdx = aliceIdx;
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "aaa") {
+                        players {
+                            name
+                            doubloons
+                        }
+                        governor {
+                            name
+                        }
+                        currentPlayer {
+                            name
+                        }
+                        currentTurnPlayer {
+                            name
+                        }
+                    }
+                }
+            `;
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.gameState.players).toHaveLength(3);
+                expect(response.data.gameState.players[aliceIdx].name).toBe("Alice");
+                expect(response.data.gameState.players[aliceIdx].doubloons).toBe(2);
+                expect(response.data.gameState.governor.name).toBe("Alice");
+                expect(response.data.gameState.currentPlayer.name).toBe("Alice");
+                expect(response.data.gameState.currentTurnPlayer.name).toBe("Alice");
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
+
         it("looks up available actions for a player", async () => {
             const gs = new GameState(["Alice", "Bob", "Carol"]);
             gs.id = "aaa";
