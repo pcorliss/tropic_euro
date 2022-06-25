@@ -117,4 +117,29 @@ describe("server", () => {
             }
         });
     });
+
+    describe("Apply an action", () => {
+        it("chooses a role", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            const firstPlayer = gs.players[0].name;
+            gs.save();
+
+            const query = `
+              mutation {
+                applyAction(gs: "aaa", player: "${firstPlayer}", key: "chooseSettler") {
+                  actionCounter
+                }
+              }
+            `;
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.applyAction.actionCounter).toBe(1);
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
+    });
 });

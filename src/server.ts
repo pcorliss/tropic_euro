@@ -28,6 +28,12 @@ export class Server {
         gs.save();
         return gs;
       },
+      applyAction: ({gs, player, key}: {gs: string, player: string, key: string}) => {
+        const gameState = GameState.find(gs);
+        const p = gameState.players.find((p) => p.name == player);
+        gameState.applyAction(p, key);
+        return gameState;
+      },
     };
 
     this.app.use("/graphql", graphqlHTTP({
