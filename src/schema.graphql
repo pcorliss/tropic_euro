@@ -14,6 +14,30 @@ type GameState {
     roundCounter: Int
     buildings: [Building]
     availableActions(playerId: String): [Action]
+
+    quarries: Int
+    colonists: Int
+    colonyShip: Int
+    victoryPoints: Int
+
+    # lastChange: Int - "Int cannot represent non 32-bit signed integer value: 1656194269745"
+
+    # visiblePlantations: [Plantation]
+
+    # ships: [Ship]
+
+    # availableRoles: [Role]
+    # currentRole: Role
+
+    # players: [Player]
+    # governor: Player
+    # currentPlayer: Player
+    # currentTurnPlayer: Player
+
+    # tradingHouse: [Good]
+
+    # goods: [???]
+
 }
 
 type Query {

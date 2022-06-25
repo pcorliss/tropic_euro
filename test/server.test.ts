@@ -44,6 +44,10 @@ describe("server", () => {
                         id
                         actionCounter
                         json
+                        quarries
+                        colonists
+                        colonyShip
+                        victoryPoints
                     }
                 }
             `;
@@ -52,6 +56,10 @@ describe("server", () => {
             try {
                 expect(response.data.gameState.id).toBe(gs.id);
                 expect(response.data.gameState.actionCounter).toBe(0);
+                expect(response.data.gameState.quarries).toBe(8);
+                expect(response.data.gameState.colonists).toBe(55);
+                expect(response.data.gameState.colonyShip).toBe(3);
+                expect(response.data.gameState.victoryPoints).toBe(75);
                 expect(JSON.parse(response.data.gameState.json).id).toBe(gs.id);
             } catch (error) {
                 console.error(response);
