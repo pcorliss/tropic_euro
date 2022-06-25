@@ -1,5 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`server Get GameState looks up available actions for a player 1`] = `
+Object {
+  "data": Object {
+    "gameState": Object {
+      "availableActions": Array [
+        Object {
+          "key": "chooseSettler",
+        },
+        Object {
+          "key": "chooseMayor",
+        },
+        Object {
+          "key": "chooseBuilder",
+        },
+        Object {
+          "key": "chooseCraftsman",
+        },
+        Object {
+          "key": "chooseTrader",
+        },
+        Object {
+          "key": "chooseCaptain",
+        },
+      ],
+    },
+  },
+}
+`;
+
 exports[`server Hello Pie! 1`] = `
 Object {
   "data": Object {

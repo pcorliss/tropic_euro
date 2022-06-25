@@ -20,3 +20,8 @@ type Query {
     hello: String
     gameState(id: String): GameState
 }
+
+type Mutation {
+   createGame(players: [String]): GameState
+   applyAction(gs: String, player: String, key: String): GameState
+}

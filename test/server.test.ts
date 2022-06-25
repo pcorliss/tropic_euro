@@ -59,25 +59,62 @@ describe("server", () => {
             }
         });
 
-        // it("looks up a gamestate by id", async () => {
-        //     const gs = new GameState(["Alice", "Bob", "Carol"]);
-        //     gs.id = "aaa";
-        //     gs.save();
-        //     const query = `
-        //         query {
-        //             gameState(id: "aaa") {
-        //                 availableActions(playerId: "Alice")
-        //             }
-        //         }
-        //     `;
+        it("looks up available actions for a player", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            const firstPlayer = gs.players[0].name;
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "aaa") {
+                        availableActions(playerId: "${firstPlayer}") {
+                            key
+                        }
+                    }
+                }
+            `;
 
-        //     const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
-        //     try {
-        //         expect(response.data.gameState.availableActions).toBe("cake");
-        //     } catch (error) {
-        //         console.error(response);
-        //         throw(error);
-        //     }
-        // });
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.gameState.availableActions).toHaveLength(6);
+                expect(response.data.gameState.availableActions[0].key).toBe("chooseSettler");
+                expect(response).toMatchSnapshot();
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
+    });
+
+    describe("Create a game", () => {
+        it("creates a new game", async () => {
+            const query = `
+              mutation {
+                createGame(players: ["A", "B", "C"]) {
+                  id
+                  actionCounter
+                }
+              }
+            `;
+
+            Db.migrate(GameState.migrations());
+            const count = Db.conn
+                .prepare("SELECT COUNT(*) FROM gamestate")
+                .pluck()
+                .get();
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.createGame.actionCounter).toBe(0);
+                const newCount = Db.conn
+                    .prepare("SELECT COUNT(*) FROM gamestate")
+                    .pluck()
+                    .get();
+                expect(newCount).toBe(count + 1);
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
     });
 });

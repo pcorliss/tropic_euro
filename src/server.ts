@@ -23,6 +23,11 @@ export class Server {
         const gs = GameState.find(id);
         return gs;
       },
+      createGame: ({players}: {players: [string]}) => {
+        const gs = new GameState(players);
+        gs.save();
+        return gs;
+      },
     };
 
     this.app.use("/graphql", graphqlHTTP({
