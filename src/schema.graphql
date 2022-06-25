@@ -2,11 +2,16 @@ type Action {
     key: ID!
 }
 
+type Building {
+    name: ID!
+}
+
 type GameState {
     id: ID!
     json: String
     actionCounter: Int
     roundCounter: Int
+    buildings: [Building]
     availableActions(playerId: String): [Action]
 }
 

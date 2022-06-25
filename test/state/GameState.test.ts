@@ -282,6 +282,55 @@ describe("GameState", () => {
             const newGS = GameState.hydrate(gsJSObj);
             expect(JSON.stringify(newGS)).toBe(JSON.stringify(gs));
         });
+
+        it("reconstitutes available roles from JSON", () => {
+            const gsJSObj = JSON.parse(gs.json());
+            const newGS = GameState.hydrate(gsJSObj);
+
+            expect(newGS.availableRoles.map((r) => r.constructor.name))
+                .toStrictEqual(gs.availableRoles.map((r) => r.constructor.name));
+        });
+
+        it("reconstitutes roles from JSON", () => {
+            const gsJSObj = JSON.parse(gs.json());
+            const newGS = GameState.hydrate(gsJSObj);
+
+            expect(newGS.roles.map((r) => r.constructor.name))
+                .toStrictEqual(gs.roles.map((r) => r.constructor.name));
+        });
+
+        it("reconstitutes currentRole from JSON", () => {
+            gs.currentRole = gs.availableRoles.pop();
+            const gsJSObj = JSON.parse(gs.json());
+            const newGS = GameState.hydrate(gsJSObj);
+
+            expect(newGS.currentRole.constructor.name)
+                .toBe(gs.currentRole.constructor.name);
+        });
+
+        it("reconstitutes building from JSON", () => {
+            const gsJSObj = JSON.parse(gs.json());
+            const newGS = GameState.hydrate(gsJSObj);
+
+            // console.log("GS:", gs.buildings[0], gs.buildings[0].constructor.name);
+            // console.log("NEWGS:", newGS.buildings[0], newGS.buildings[0].constructor.name);
+
+            expect(newGS.buildings[0].constructor.name)
+                .toBe(gs.buildings[0].constructor.name);
+        });
+
+        it("reconstitutes player building from JSON", () => {
+            // gs.players[0].board.buildings.push(gs.buildings.pop());
+            gs.players[0].board.buildings.push(gs.buildings[0]);
+            const gsJSObj = JSON.parse(gs.json());
+            const newGS = GameState.hydrate(gsJSObj);
+
+            // console.log("GS:", gs.players[0].board.buildings[0]);
+            // console.log("newGS:", newGS.players[0].board.buildings[0]);
+
+            expect( newGS.players[0].board.buildings[0].constructor.name)
+                .toBe(gs.players[0].board.buildings[0].constructor.name);
+        });
     });
 
     describe("currentPlayer", () => {
@@ -426,6 +475,12 @@ describe("GameState", () => {
         it("advances the round counter", () => {
             gs.endRound();
             expect(gs.roundCounter).toBe(1);
+        });
+
+        it("resets the available roles", () => {
+            gs.availableRoles = [];
+            gs.endRound();
+            expect(gs.availableRoles).not.toHaveLength(0);
         });
 
         // it ("ends the game if the end game conditions have been met");

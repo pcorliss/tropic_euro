@@ -7,6 +7,7 @@ import { Role } from "./Role";
 import { Ship } from "./Ship";
 import { Action } from "./Action";
 import { Good } from "./Good";
+import { BUILDING_DISCRIMINATOR } from "./Board";
 
 import { CityHall } from "../buildings/CityHall";
 import { CoffeeRoaster } from "../buildings/CoffeeRoaster";
@@ -43,10 +44,29 @@ import { Prospector } from "../roles/Prospector";
 import { Migration, Db } from "../Db";
 
 import { shuffle } from "lodash";
-import { plainToClass } from "class-transformer";
+import { Type, plainToInstance } from "class-transformer";
+
+const ROLE_DISCRIMINATOR = {
+    discriminator: {
+        property: "name",
+        subTypes: [
+            { value: Settler, name: Settler.name },
+            { value: Mayor, name: Mayor.name },
+            { value: Builder, name: Builder.name },
+            { value: Craftsman, name: Craftsman.name },
+            { value: Trader, name: Trader.name },
+            { value: Captain, name: Captain.name },
+            { value: Prospector, name: Prospector.name },
+        ],
+    },
+    keepDiscriminatorProperty: true,
+};
 
 export class GameState {
+    @Type(() => Player)
     players: Player[];
+
+    @Type(() => Building, BUILDING_DISCRIMINATOR)
     buildings: Building[];
     visiblePlantations: Plantation[];
     plantationSupply: Plantation[];
@@ -57,15 +77,20 @@ export class GameState {
     colonyShip: number;
     victoryPoints: number;
     ships: Ship[];
+
+    @Type(() => Role, ROLE_DISCRIMINATOR)
     roles: Role[];
+    @Type(() => Role, ROLE_DISCRIMINATOR)
     availableRoles: Role[];
+    @Type(() => Role, ROLE_DISCRIMINATOR)
+    currentRole: Role = null;
+
     roundCounter = 0;
     actionCounter = 0;
     lastChange = +new Date();
     governorIdx = 0;
     currentPlayerIdx = 0;
     currentTurnPlayerIdx = 0;
-    currentRole: Role = null;
     tradingHouse: Good[] = [];
     cantRefillColonyShip = false;
     id: string = null;
@@ -322,6 +347,7 @@ export class GameState {
         this.roundCounter++;
         this.currentPlayerIdx = this.governorIdx;
         this.availableRoles.forEach((r) => r.doubloons++);
+        this.availableRoles = this.roles;
         return;
     }
 
@@ -404,8 +430,9 @@ export class GameState {
 
     static hydrate(blob: GameState): GameState {
         // console.log("Hydrating:", blob);
-        return plainToClass(GameState, blob);
+        return plainToInstance(GameState, blob);
     }
+
     static find(id: string): GameState {
         Db.migrate(GameState.migrations());
 

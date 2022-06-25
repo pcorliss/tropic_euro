@@ -1,5 +1,6 @@
 import { Board } from "./Board";
 import { Good } from "./Good";
+import { Type } from "class-transformer";
 
 export class Player {
     name: string;
@@ -12,6 +13,7 @@ export class Player {
         tobacco: 0,
         coffee: 0,
     };
+    @Type(() => Board)
     board: Board;
 
     constructor(name: string) {
