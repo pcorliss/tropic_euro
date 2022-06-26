@@ -2,8 +2,7 @@ import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
 import * as fs from "fs";
-import GraphQLJSON from "graphql-type-json";
-
+import { resolvers as scalarResolvers } from "graphql-scalars";
 
 import { GameState } from "./state/GameState";
 import { Db } from "../src/Db";

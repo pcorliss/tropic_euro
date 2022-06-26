@@ -1,5 +1,5 @@
-scalar JSON
 scalar JSONObject
+scalar BigInt
 
 type Action {
     key: ID!
@@ -46,7 +46,7 @@ type GameState {
     colonyShip: Int
     victoryPoints: Int
 
-    # lastChange: Int - "Int cannot represent non 32-bit signed integer value: 1656194269745"
+    lastChange: BigInt
 
     visiblePlantations: [Plantation]
 
