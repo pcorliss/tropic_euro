@@ -314,6 +314,8 @@ export class GameState {
     }
 
     applyAction(player: Player, key: string): void {
+        // TODO, need to verify the action is valid before applying
+        // TODO, need to accept board blob for mayor phase
         this.getAvailableActions(player)
             .find(action => action.key == key)
             ?.apply(this, player);
