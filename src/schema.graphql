@@ -8,6 +8,13 @@ type Action {
 type Building {
     name: ID!
     description: String
+    production: Boolean
+    productionType: String
+    staffSpots: Int
+    size: Int
+    staff: Int
+    points: Int
+    cost: Int
 }
 
 type Role {
@@ -24,6 +31,13 @@ type Plantation {
 type Player {
     name: ID!
     doubloons: Int
+    board: Board
+}
+
+type Board {
+    buildings: [Building]
+    plantations: [Plantation]
+    sanJuanColonists: Int
 }
 
 type Ship {

@@ -292,7 +292,80 @@ describe("server", () => {
             }
         });
 
+        it("returns building information", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "aaa") {
+                        buildings {
+                            name
+                            description
+                            production
+                            productionType
+                            staffSpots
+                            size
+                            staff
+                            points
+                            cost
+                        }
+                    }
+                }
+            `;
 
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.gameState.buildings[0].name).toBe("Small Indigo Plant");
+                expect(response.data.gameState.buildings[0].description).toBe("");
+                expect(response.data.gameState.buildings[0].production).toBeTruthy();
+                expect(response.data.gameState.buildings[0].productionType).toBe("indigo");
+                expect(response.data.gameState.buildings[0].staffSpots).toBe(1);
+                expect(response.data.gameState.buildings[0].size).toBe(1);
+                expect(response.data.gameState.buildings[0].staff).toBe(0);
+                expect(response.data.gameState.buildings[0].points).toBe(1);
+                expect(response.data.gameState.buildings[0].cost).toBe(1);
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
+
+    });
+
+    describe("Board", () => {
+        it("returns boards as part of players", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "aaa") {
+                        players {
+                            board {
+                                buildings {
+                                    name
+                                }
+                                plantations {
+                                    type
+                                }
+                                sanJuanColonists
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(response.data.gameState.players[0].board.buildings).toHaveLength(0);
+                expect(response.data.gameState.players[0].board.plantations).toHaveLength(1);
+                expect(response.data.gameState.players[0].board.plantations[0].type).toBe("indigo");
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
     });
 
     describe("Create a game", () => {
