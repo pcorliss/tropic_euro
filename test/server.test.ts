@@ -244,6 +244,28 @@ describe("server", () => {
             }
         });
 
+        it("returns goods", async () => {
+            const gs = new GameState(["Alice", "Bob", "Carol"]);
+            gs.id = "aaa";
+            gs.save();
+            const query = `
+                query {
+                    gameState(id: "aaa") {
+                        goods
+                    }
+                }
+            `;
+
+            const response = await RequestPromise({method: "POST", uri: API, body: {query}, json: true});
+            try {
+                expect(Object.keys(response.data.gameState.goods)).toHaveLength(5);
+                expect(response.data.gameState.goods.corn).toBe(10);
+            } catch (error) {
+                console.error(response);
+                throw(error);
+            }
+        });
+
         it("looks up available actions for a player", async () => {
             const gs = new GameState(["Alice", "Bob", "Carol"]);
             gs.id = "aaa";
@@ -269,6 +291,8 @@ describe("server", () => {
                 throw(error);
             }
         });
+
+
     });
 
     describe("Create a game", () => {

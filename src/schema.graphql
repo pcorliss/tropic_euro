@@ -1,3 +1,6 @@
+scalar JSON
+scalar JSONObject
+
 type Action {
     key: ID!
 }
@@ -59,8 +62,7 @@ type GameState {
 
     tradingHouse: [String]
 
-    # goods: [???]
-
+    goods: JSONObject
 }
 
 type Query {
