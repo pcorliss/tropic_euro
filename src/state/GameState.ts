@@ -149,7 +149,21 @@ export class GameState {
         }
 
         this.plantationSupply = shuffle(this.plantationSupply);
-        for (let i = 0; i <= this.players.length; i++) {
+        this.resetPlantations();
+    }
+
+    resetPlantations(): void {
+        this.visiblePlantations.forEach((p) => {
+            this.discardedPlantations.push(p);
+        });
+
+        this.visiblePlantations = [];
+
+        const plantationsToTake = Math.min(
+            this.players.length + 1,
+            this.plantationSupply.length
+        );
+        for (let i = 0; i < plantationsToTake; i++) {
             this.visiblePlantations.push(
                 this.plantationSupply.pop()
             );

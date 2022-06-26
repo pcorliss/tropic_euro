@@ -201,6 +201,17 @@ describe("Settler", () => {
                 a.apply(gs, gs.players[2]);
                 expect(gs.currentPlayerIdx).toBe(1);
             });
+
+            it("resets the plantations at the role end", () => {
+                gs.currentTurnPlayerIdx = 2;
+                gs.currentPlayerIdx = 0;
+                gs.visiblePlantations = gs.visiblePlantations.slice(0,2);
+                const actions = role.availableActions(gs, gs.players[2]);
+                const a = actions[0];
+                a.apply(gs, gs.players[2]);
+                expect(gs.visiblePlantations).toHaveLength(4);
+                expect(gs.discardedPlantations).toHaveLength(2);
+            });
         });
     });
 });

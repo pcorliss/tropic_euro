@@ -551,6 +551,26 @@ describe("GameState", () => {
         });
     });
 
+    describe("resetPlantations", () => {
+        it("moves visible to discarded", () => {
+            gs.visiblePlantations = gs.visiblePlantations.slice(0,2);
+            gs.resetPlantations();
+            expect(gs.discardedPlantations).toHaveLength(2);
+        });
+
+        it("adds new plantations one plus player length", () => {
+            gs.visiblePlantations = gs.visiblePlantations.slice(0,2);
+            gs.resetPlantations();
+            expect(gs.visiblePlantations).toHaveLength(4);
+        });
+
+        it("doesn't take more than in supply", () => {
+            gs.plantationSupply = gs.plantationSupply.slice(0,2);
+            gs.resetPlantations();
+            expect(gs.visiblePlantations).toHaveLength(2);
+        });
+    });
+
     describe("gameEnd", () => {
         it("returns false", () => {
             expect(gs.gameEnd()).toBeFalsy();

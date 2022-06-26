@@ -20,9 +20,6 @@ npm run watch-test
 
 ## Next Steps
 
-* Investigate Typescript GraphQL object return
-* Investigate SQLite serialization and deserialization of Gamestate as one big JSON blob
 * Think about audit log - Each action emits a log explaining what happened
-* Work on the controllers/graphql equivalent for getting state, actions, and submitting actions
 * Work on a react based frontend to display gamestate and take selections
 * Maybe something with websockets so we're not constantly polling? What would that look like

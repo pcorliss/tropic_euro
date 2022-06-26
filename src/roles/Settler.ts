@@ -8,11 +8,11 @@ export class Settler extends Role {
     description = "";
     phase = "settling";
 
-    availableActions(gs?: GameState, player?: Player): Action[] {
-        // Support Hacienda
-        // Support Hospice
-        // Support Construction Hut
+    endRole(gs?: GameState, player?: Player): void {
+        gs.resetPlantations();
+    }
 
+    availableActions(gs?: GameState, player?: Player): Action[] {
         const actions: Action[] = [];
 
         if (gs.currentTurnPlayer() != player) {
