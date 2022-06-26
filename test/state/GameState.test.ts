@@ -441,6 +441,17 @@ describe("GameState", () => {
             gs.currentPlayerIdx = gs.players.length - 1;
             gs.endRole();
             expect(gs.governorIdx).toBe(1);
+            expect(gs.currentPlayerIdx).toBe(1);
+            expect(gs.currentTurnPlayerIdx).toBe(1);
+        });
+
+        it("doesn't allow the governor index to go beyond the player indexes", () => {
+            gs.governorIdx = 2;
+            gs.currentPlayerIdx = 1;
+            gs.endRole();
+            expect(gs.governorIdx).toBe(0);
+            expect(gs.currentPlayerIdx).toBe(0);
+            expect(gs.currentTurnPlayerIdx).toBe(0);
         });
 
         it("it resets the current turn player", () => {

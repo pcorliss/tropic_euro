@@ -358,8 +358,10 @@ export class GameState {
 
     endRound(): void {
         this.governorIdx++;
+        this.governorIdx %= this.players.length;
         this.roundCounter++;
         this.currentPlayerIdx = this.governorIdx;
+        this.currentTurnPlayerIdx = this.governorIdx;
         this.availableRoles.forEach((r) => r.doubloons++);
         this.availableRoles = this.roles;
         return;
