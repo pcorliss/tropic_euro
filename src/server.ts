@@ -2,14 +2,21 @@ import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
 import * as fs from "fs";
+import cors from "cors";
 
 import { GameState } from "./state/GameState";
 import { Db } from "../src/Db";
 
+
 export class Server {
   app = express();
 
+
   constructor() {
+    this.app.use(cors({
+      origin: "http://localho.st:3000"
+    }));
+
     Db.init();
 
     // Construct a schema, using GraphQL schema language
