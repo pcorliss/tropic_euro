@@ -7,7 +7,7 @@ import { SmallIndigoPlant } from "../../src/buildings/SmallIndigoPlant";
 import { SmallMarket } from "../../src/buildings/SmallMarket";
 import { GameState } from "../../src/state/GameState";
 import { Role } from "../../src/state/Role";
-import { Db } from "../../src/Db";
+import { Db } from "../../src/db";
 
 describe("GameState", () => {
     let gs: GameState = null;

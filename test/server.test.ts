@@ -3,7 +3,7 @@ import { GameState } from "../src/state/GameState";
 
 import RequestPromise from "request-promise";
 import * as http from "http";
-import { Db } from "../src/Db";
+import { Db } from "../src/db";
 
 const API = "http://localhost:4999/graphql";
 

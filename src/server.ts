@@ -5,7 +5,7 @@ import * as fs from "fs";
 import cors from "cors";
 
 import { GameState } from "./state/GameState";
-import { Db } from "../src/Db";
+import { Db } from "./db";
 
 
 export class Server {

@@ -41,7 +41,7 @@ import { Trader } from "../roles/Trader";
 import { Captain } from "../roles/Captain";
 import { Prospector } from "../roles/Prospector";
 
-import { Migration, Db } from "../Db";
+import { Migration, Db } from "../db";
 
 import { shuffle } from "lodash";
 import { Type, plainToInstance } from "class-transformer";

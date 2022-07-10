@@ -1,4 +1,4 @@
-import { Db } from "../src/Db";
+import { Db } from "../src/db";
 import { unlink } from "node:fs";
 
 describe("Db", () => {
