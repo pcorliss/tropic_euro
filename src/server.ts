@@ -13,6 +13,8 @@ export class Server {
 
 
   constructor() {
+    this.app.use(express.static("public"));
+
     this.app.use(cors({
       origin: "http://localho.st:3000"
     }));
